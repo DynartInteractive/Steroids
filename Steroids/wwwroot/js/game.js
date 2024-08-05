@@ -10,13 +10,12 @@ class Game {
         this.steroids = [];
         this.level = 1;
         this.score = 0;
-        
-        this.initLevel(this.level);
-        this.update();
+
+        this.initLevel(this.level).then(() => this.update());
     }
-    initLevel(level) {
+    async initLevel(level) {
         this.steroids = [];
-        this.initSteroid(level);
+        await this.initSteroid(level);
     }
     async initSteroid(level) {
         const numEnemies = Math.min(level, 6); // Ensure we have at most 6 enemies

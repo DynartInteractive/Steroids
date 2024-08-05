@@ -8,7 +8,7 @@ export class Steroid {
             x: Math.random() * svgElement.viewBox.baseVal.width,
             y: Math.random() * svgElement.viewBox.baseVal.height
         };
-        this.thrust = new Thrust(0.5, 1);
+        this.thrust = new Thrust(1,0.3);
         this.fluctuationSize = 1; // Initial fluctuation size
         this.fluctuationSpeed = 0.005; // Slower fluctuation speed
         this.fluctuationDirection = 1; // Direction of size fluctuation
@@ -25,6 +25,7 @@ export class Steroid {
         this.svgElement.appendChild(this.debugCircle);
         
         this.loadSvg(`/source/SVG/enemy/${id}.svg`)
+            .then(() => this.updateSteroidPosition());
     }
     async loadSvg(url) {
         const response = await fetch(url);
@@ -32,9 +33,9 @@ export class Steroid {
         const parser = new DOMParser();
         const svgDoc = parser.parseFromString(svgText, 'image/svg+xml');
         this.steroid = svgDoc.documentElement;
-        this.steroid.setAttribute('id', `enemy_${this.id}`);
+        this.steroid.setAttribute('id', `${this.id}`);
         this.svgElement.appendChild(this.steroid);
-        this.updateSteroidPosition();
+        return Promise.resolve();
     }
     fluctuateSize() {
         this.fluctuationSize += this.fluctuationSpeed * this.fluctuationDirection;
