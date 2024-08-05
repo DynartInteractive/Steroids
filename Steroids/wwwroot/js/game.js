@@ -18,10 +18,12 @@ class Game {
         this.steroids = [];
         this.initSteroid(level);
     }
-    initSteroid(level) {
+    async initSteroid(level) {
         const numEnemies = Math.min(level, 6); // Ensure we have at most 6 enemies
         for (let i = 0; i < numEnemies; i++) {
-            this.steroids.push(new Steroid(this.svgElement, `enemy_${i}`, this.needle));
+            const steroid = new Steroid(this.svgElement, `enemy_${i}`, this.needle);
+            await steroid.loadSvg(`/source/SVG/enemy/enemy_${i}.svg`);
+            this.steroids.push(steroid);
         }
     }
     
