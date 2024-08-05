@@ -8,20 +8,29 @@ class Game {
         this.height = svgElement.viewBox.baseVal.height;
         this.needle = new Needle(svgElement);
         this.steroids = [];
+        this.level = 1;
         this.score = 0;
         
-        this.initSteroid();
+        this.initLevel(this.level);
         this.update();
     }
-    initSteroid() {
-        for (let i = 0; i < 6; i++) {
-            this.steroids.push(new Steroid(this.svgElement, `Enemy_${i}`));  
+    initLevel(level) {
+        this.steroids = [];
+        this.initSteroid(level);
+    }
+    initSteroid(level) {
+        const numEnemies = Math.min(level, 6); // Ensure we have at most 6 enemies
+        for (let i = 0; i < numEnemies; i++) {
+            this.steroids.push(new Steroid(this.svgElement, `enemy_${i}`, this.needle));
         }
     }
+    
+    nextLevel() {
+        this.level += 1;
+        this.initLevel(this.level);
+    }
 
-    update() {
-        //this.needle.updateNeedle();
-        
+    update() {            
         this.steroids.forEach(steroid => {
             steroid.updateSteroidPosition();
         })
@@ -39,6 +48,11 @@ class Game {
                     steroid.steroid.remove();
                     this.steroids.splice(sIndex, 1);
                     this.score += 10;
+                }
+                
+                // Check if all steroids are destroyed to advance to the next level
+                if (this.steroids.length === 0) {
+                    this.nextLevel();
                 }
             });
         });

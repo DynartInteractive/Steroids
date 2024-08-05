@@ -1,9 +1,10 @@
 export class Thrust {
-    constructor() {
+    constructor(thrustAmount = 1, friction= 0.5, FPS=30) {
         this.velocity = { x: 0, y: 0 };
-        this.thrustAmount = 1;
-        this.friction = 0.5;
-        this.FPS = 30;
+        this.thrustAmount = thrustAmount;
+        this.friction = friction;
+        this.FPS = FPS;
+        this.distanceTravelled = 0
     }
 
     applyThrust(angle) {
@@ -18,9 +19,16 @@ export class Thrust {
     }
 
     updatePosition(position) {
-        return {
+        const newPosition = {
             x: position.x + this.velocity.x,
             y: position.y + this.velocity.y
         };
+        const dx = newPosition.x - position.x;
+        const dy = newPosition.y - position.y;
+        this.distanceTravelled += Math.sqrt(dx * dx + dy * dy);
+        return newPosition;
+    }
+    resetDistance() {
+        this.distanceTravelled = 0;
     }
 }

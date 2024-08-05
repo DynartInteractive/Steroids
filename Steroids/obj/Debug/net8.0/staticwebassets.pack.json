@@ -269,32 +269,36 @@
       "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.map"
     },
     {
-      "Id": "C:\\Projects\\Steroids\\Steroids\\wwwroot\\source\\SVG\\Asset.svg",
-      "PackagePath": "staticwebassets\\source\\SVG\\Asset.svg"
+      "Id": "C:\\Projects\\Steroids\\Steroids\\wwwroot\\source\\SVG\\Player\\needlev4.svg",
+      "PackagePath": "staticwebassets\\source\\SVG\\Player\\needlev4.svg"
     },
     {
-      "Id": "C:\\Projects\\Steroids\\Steroids\\wwwroot\\source\\SVG\\SVG\\needlev2.svg",
-      "PackagePath": "staticwebassets\\source\\SVG\\SVG\\needlev2.svg"
+      "Id": "C:\\Projects\\Steroids\\Steroids\\wwwroot\\source\\SVG\\enemy\\enemy_0.svg",
+      "PackagePath": "staticwebassets\\source\\SVG\\enemy\\enemy_0.svg"
     },
     {
-      "Id": "C:\\Projects\\Steroids\\Steroids\\wwwroot\\source\\SVG\\SVG\\needlev3.svg",
-      "PackagePath": "staticwebassets\\source\\SVG\\SVG\\needlev3.svg"
+      "Id": "C:\\Projects\\Steroids\\Steroids\\wwwroot\\source\\SVG\\enemy\\enemy_1.svg",
+      "PackagePath": "staticwebassets\\source\\SVG\\enemy\\enemy_1.svg"
     },
     {
-      "Id": "C:\\Projects\\Steroids\\Steroids\\wwwroot\\source\\SVG\\SVG\\needlev4.svg",
-      "PackagePath": "staticwebassets\\source\\SVG\\SVG\\needlev4.svg"
+      "Id": "C:\\Projects\\Steroids\\Steroids\\wwwroot\\source\\SVG\\enemy\\enemy_2.svg",
+      "PackagePath": "staticwebassets\\source\\SVG\\enemy\\enemy_2.svg"
     },
     {
-      "Id": "C:\\Projects\\Steroids\\Steroids\\wwwroot\\source\\SVG\\needle.svg",
-      "PackagePath": "staticwebassets\\source\\SVG\\needle.svg"
+      "Id": "C:\\Projects\\Steroids\\Steroids\\wwwroot\\source\\SVG\\enemy\\enemy_3.svg",
+      "PackagePath": "staticwebassets\\source\\SVG\\enemy\\enemy_3.svg"
     },
     {
-      "Id": "C:\\Projects\\Steroids\\Steroids\\wwwroot\\source\\SVG\\steroids.svg",
-      "PackagePath": "staticwebassets\\source\\SVG\\steroids.svg"
+      "Id": "C:\\Projects\\Steroids\\Steroids\\wwwroot\\source\\SVG\\enemy\\enemy_4.svg",
+      "PackagePath": "staticwebassets\\source\\SVG\\enemy\\enemy_4.svg"
     },
     {
-      "Id": "C:\\Projects\\Steroids\\Steroids\\wwwroot\\source\\Steroids.svg",
-      "PackagePath": "staticwebassets\\source\\Steroids.svg"
+      "Id": "C:\\Projects\\Steroids\\Steroids\\wwwroot\\source\\SVG\\enemy\\enemy_5.svg",
+      "PackagePath": "staticwebassets\\source\\SVG\\enemy\\enemy_5.svg"
+    },
+    {
+      "Id": "C:\\Projects\\Steroids\\Steroids\\wwwroot\\source\\source.svg",
+      "PackagePath": "staticwebassets\\source\\source.svg"
     },
     {
       "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.Steroids.Microsoft.AspNetCore.StaticWebAssets.props",

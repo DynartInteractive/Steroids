@@ -1,33 +1,84 @@
+import { Thrust } from './thrust.js';
 export class Steroid {
-    constructor(svgElement, id) {
+    constructor(svgElement, id, needle) {
         this.svgElement = svgElement;
         this.id = id;
-        this.steroid = svgElement.querySelector(`#${id}`);
+        this.needle = needle;
         this.steroidPosition = {
             x: Math.random() * svgElement.viewBox.baseVal.width,
             y: Math.random() * svgElement.viewBox.baseVal.height
         };
-        this.steroidSpeed = {
-            x: (Math.random() - 0.5) * 2,
-            y: (Math.random() - 0.5) * 2
-        };
+        this.thrust = new Thrust(0.5, 1);
+        this.fluctuationSize = 1; // Initial fluctuation size
+        this.fluctuationSpeed = 0.005; // Slower fluctuation speed
+        this.fluctuationDirection = 1; // Direction of size fluctuation
+        this.fluctuationCounter = 0; // Counter for fluctuation time
+        this.fluctuationDelay = 300; // Delay in frames before next attack
+        this.state = 'fluctuating'; // Initial state
+        
         this.steroidAngle = 0; // Initial angle
-        this.steroidRotationSpeed = (Math.random() - 0.5) * 0.1; // Random rotation speed
 
+        // Create a circle for debugging the position
+        this.debugCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        this.debugCircle.setAttribute("r", 5);
+        this.debugCircle.setAttribute("fill", "red");
+        this.svgElement.appendChild(this.debugCircle);
+        
+        this.loadSvg(`/source/SVG/enemy/${id}.svg`)
+    }
+    async loadSvg(url) {
+        const response = await fetch(url);
+        const svgText = await response.text();
+        const parser = new DOMParser();
+        const svgDoc = parser.parseFromString(svgText, 'image/svg+xml');
+        this.steroid = svgDoc.documentElement;
+        this.steroid.setAttribute('id', `enemy_${this.id}`);
+        this.svgElement.appendChild(this.steroid);
         this.updateSteroidPosition();
     }
+    fluctuateSize() {
+        this.fluctuationSize += this.fluctuationSpeed * this.fluctuationDirection;
+        if (this.fluctuationSize > 1.2 || this.fluctuationSize < 0.8) {
+            this.fluctuationDirection *= -1; // Reverse direction when reaching bounds
+        }
+    }
 
+    targetNeedle() {
+        const dx = this.needle.needlePosition.x - this.steroidPosition.x;
+        const dy = this.needle.needlePosition.y - this.steroidPosition.y;
+        this.steroidAngle = Math.atan2(dy, dx) * (180 / Math.PI); // Calculate angle in degrees
+        //console.log(`Targeting Needle at: (${this.needle.needlePosition.x}, ${this.needle.needlePosition.y}), Steroid Angle: ${this.steroidAngle}`);
+    }
     updateSteroidPosition() {
-        this.steroidPosition.x += this.steroidSpeed.x;
-        this.steroidPosition.y += this.steroidSpeed.y;
-        this.steroidAngle += this.steroidRotationSpeed;
+        if (!this.steroid) return; // Wait until the SVG is loaded
 
-        // Wrap around the screen
-        if (this.steroidPosition.x < 0) this.steroidPosition.x = this.svgElement.viewBox.baseVal.width;
-        if (this.steroidPosition.x > this.svgElement.viewBox.baseVal.width) this.steroidPosition.x = 0;
-        if (this.steroidPosition.y < 0) this.steroidPosition.y = this.svgElement.viewBox.baseVal.height;
-        if (this.steroidPosition.y > this.svgElement.viewBox.baseVal.height) this.steroidPosition.y = 0;
+        if (this.state === 'fluctuating') {
+            this.fluctuateSize();
+            this.targetNeedle();
 
-        this.steroid.setAttribute('transform', `translate(${this.steroidPosition.x}, ${this.steroidPosition.y}) rotate(${this.steroidAngle})`);
+            if (this.fluctuationCounter < this.fluctuationDelay) {
+                this.fluctuationCounter++;
+            } else {
+                this.state = 'moving';
+                this.fluctuationCounter = 0;
+            }
+        } else if (this.state === 'moving') {
+            // Instead of thrusting, just move towards the target position calculated by the thrust
+            this.thrust.applyThrust(this.steroidAngle);
+            this.steroidPosition = this.thrust.updatePosition(this.steroidPosition);
+
+            // After moving for a short distance, switch back to fluctuating state
+            if (this.thrust.distanceTravelled >= 10) { // Adjust the distance as needed
+                this.state = 'fluctuating';
+                this.thrust.resetDistance(); // Reset the distance travelled for the next move
+            }
+        }
+
+        // Update SVG element with new position and rotation
+        this.steroid.setAttribute('transform', `translate(${this.steroidPosition.x}, ${this.steroidPosition.y}) rotate(${this.steroidAngle}) scale(${this.fluctuationSize})`);
+
+        // Update debug circle position
+        this.debugCircle.setAttribute('cx', this.steroidPosition.x);
+        this.debugCircle.setAttribute('cy', this.steroidPosition.y);
     }
 }

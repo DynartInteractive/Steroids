@@ -28,3 +28,4 @@ C:\Projects\Steroids\Steroids\obj\Debug\net8.0\refint\Steroids.dll
 C:\Projects\Steroids\Steroids\obj\Debug\net8.0\Steroids.pdb
 C:\Projects\Steroids\Steroids\obj\Debug\net8.0\Steroids.genruntimeconfig.cache
 C:\Projects\Steroids\Steroids\obj\Debug\net8.0\ref\Steroids.dll
+C:\Projects\Steroids\Steroids\obj\Debug\net8.0\Steroids.sourcelink.json

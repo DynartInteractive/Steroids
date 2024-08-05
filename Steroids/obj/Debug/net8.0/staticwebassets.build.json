@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "Q1Lacrj1biahCkfyetYyCUNSPsB7/QHa2CMShyNbSQc=",
+  "Hash": "bc4JnKpaBguFi+twHrtZbGQ6/YsmgwnJ7/9BNSNq1oQ=",
   "Source": "Steroids",
   "BasePath": "_content/Steroids",
   "Mode": "Default",
@@ -1309,12 +1309,12 @@
       "OriginalItemSpec": "wwwroot\\lib\\jquery\\LICENSE.txt"
     },
     {
-      "Identity": "C:\\Projects\\Steroids\\Steroids\\wwwroot\\source\\Steroids.svg",
+      "Identity": "C:\\Projects\\Steroids\\Steroids\\wwwroot\\source\\source.svg",
       "SourceId": "Steroids",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Projects\\Steroids\\Steroids\\wwwroot\\",
       "BasePath": "_content/Steroids",
-      "RelativePath": "source/Steroids.svg",
+      "RelativePath": "source/source.svg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -1325,15 +1325,15 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\source\\Steroids.svg"
+      "OriginalItemSpec": "wwwroot\\source\\source.svg"
     },
     {
-      "Identity": "C:\\Projects\\Steroids\\Steroids\\wwwroot\\source\\SVG\\Asset.svg",
+      "Identity": "C:\\Projects\\Steroids\\Steroids\\wwwroot\\source\\SVG\\enemy\\enemy_0.svg",
       "SourceId": "Steroids",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Projects\\Steroids\\Steroids\\wwwroot\\",
       "BasePath": "_content/Steroids",
-      "RelativePath": "source/SVG/Asset.svg",
+      "RelativePath": "source/SVG/enemy/enemy_0.svg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -1344,15 +1344,15 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\source\\SVG\\Asset.svg"
+      "OriginalItemSpec": "wwwroot\\source\\SVG\\enemy\\enemy_0.svg"
     },
     {
-      "Identity": "C:\\Projects\\Steroids\\Steroids\\wwwroot\\source\\SVG\\needle.svg",
+      "Identity": "C:\\Projects\\Steroids\\Steroids\\wwwroot\\source\\SVG\\enemy\\enemy_1.svg",
       "SourceId": "Steroids",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Projects\\Steroids\\Steroids\\wwwroot\\",
       "BasePath": "_content/Steroids",
-      "RelativePath": "source/SVG/needle.svg",
+      "RelativePath": "source/SVG/enemy/enemy_1.svg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -1363,15 +1363,15 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\source\\SVG\\needle.svg"
+      "OriginalItemSpec": "wwwroot\\source\\SVG\\enemy\\enemy_1.svg"
     },
     {
-      "Identity": "C:\\Projects\\Steroids\\Steroids\\wwwroot\\source\\SVG\\steroids.svg",
+      "Identity": "C:\\Projects\\Steroids\\Steroids\\wwwroot\\source\\SVG\\enemy\\enemy_2.svg",
       "SourceId": "Steroids",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Projects\\Steroids\\Steroids\\wwwroot\\",
       "BasePath": "_content/Steroids",
-      "RelativePath": "source/SVG/steroids.svg",
+      "RelativePath": "source/SVG/enemy/enemy_2.svg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -1382,15 +1382,15 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\source\\SVG\\steroids.svg"
+      "OriginalItemSpec": "wwwroot\\source\\SVG\\enemy\\enemy_2.svg"
     },
     {
-      "Identity": "C:\\Projects\\Steroids\\Steroids\\wwwroot\\source\\SVG\\SVG\\needlev2.svg",
+      "Identity": "C:\\Projects\\Steroids\\Steroids\\wwwroot\\source\\SVG\\enemy\\enemy_3.svg",
       "SourceId": "Steroids",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Projects\\Steroids\\Steroids\\wwwroot\\",
       "BasePath": "_content/Steroids",
-      "RelativePath": "source/SVG/SVG/needlev2.svg",
+      "RelativePath": "source/SVG/enemy/enemy_3.svg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -1401,15 +1401,15 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\source\\SVG\\SVG\\needlev2.svg"
+      "OriginalItemSpec": "wwwroot\\source\\SVG\\enemy\\enemy_3.svg"
     },
     {
-      "Identity": "C:\\Projects\\Steroids\\Steroids\\wwwroot\\source\\SVG\\SVG\\needlev3.svg",
+      "Identity": "C:\\Projects\\Steroids\\Steroids\\wwwroot\\source\\SVG\\enemy\\enemy_4.svg",
       "SourceId": "Steroids",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Projects\\Steroids\\Steroids\\wwwroot\\",
       "BasePath": "_content/Steroids",
-      "RelativePath": "source/SVG/SVG/needlev3.svg",
+      "RelativePath": "source/SVG/enemy/enemy_4.svg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -1420,15 +1420,15 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\source\\SVG\\SVG\\needlev3.svg"
+      "OriginalItemSpec": "wwwroot\\source\\SVG\\enemy\\enemy_4.svg"
     },
     {
-      "Identity": "C:\\Projects\\Steroids\\Steroids\\wwwroot\\source\\SVG\\SVG\\needlev4.svg",
+      "Identity": "C:\\Projects\\Steroids\\Steroids\\wwwroot\\source\\SVG\\enemy\\enemy_5.svg",
       "SourceId": "Steroids",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Projects\\Steroids\\Steroids\\wwwroot\\",
       "BasePath": "_content/Steroids",
-      "RelativePath": "source/SVG/SVG/needlev4.svg",
+      "RelativePath": "source/SVG/enemy/enemy_5.svg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -1439,7 +1439,26 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\source\\SVG\\SVG\\needlev4.svg"
+      "OriginalItemSpec": "wwwroot\\source\\SVG\\enemy\\enemy_5.svg"
+    },
+    {
+      "Identity": "C:\\Projects\\Steroids\\Steroids\\wwwroot\\source\\SVG\\Player\\needlev4.svg",
+      "SourceId": "Steroids",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Projects\\Steroids\\Steroids\\wwwroot\\",
+      "BasePath": "_content/Steroids",
+      "RelativePath": "source/SVG/Player/needlev4.svg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\source\\SVG\\Player\\needlev4.svg"
     }
   ]
 }

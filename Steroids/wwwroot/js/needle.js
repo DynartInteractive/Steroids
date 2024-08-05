@@ -103,7 +103,7 @@ export class Needle {
 
         const translateX = this.needlePosition.x - cx;
         const translateY = this.needlePosition.y - cy;
-        //console.log(`Position: (${this.needlePosition.x}, ${this.needlePosition.y}), Angle: ${this.needleAngle}`);
+        //console.log(`Position: (${this.needlePosition.x}, ${this.needlePosition.y}), Angle: ${this.needleAngle}`); //uncomment on debug purpose
 
         // Perform a single DOM write operation
         this.needle.setAttribute('transform', `translate(${translateX}, ${translateY}) rotate(${this.needleAngle} ${cx} ${cy})`);
