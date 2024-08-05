@@ -33,8 +33,13 @@ export class Steroid {
         const parser = new DOMParser();
         const svgDoc = parser.parseFromString(svgText, 'image/svg+xml');
         this.steroid = svgDoc.documentElement;
-        this.steroid.setAttribute('id', `${this.id}`);
-        this.svgElement.appendChild(this.steroid);
+
+        // Wrap the loaded SVG in a group
+        this.steroidGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        this.steroidGroup.setAttribute('id', `${this.id}-group`);
+        this.steroidGroup.appendChild(this.steroid);
+
+        this.svgElement.appendChild(this.steroidGroup);
         return Promise.resolve();
     }
     fluctuateSize() {
@@ -76,8 +81,8 @@ export class Steroid {
         }
 
         // Update SVG element with new position and rotation
-        this.steroid.setAttribute('transform', `translate(${this.steroidPosition.x}, ${this.steroidPosition.y}) rotate(${this.steroidAngle}) scale(${this.fluctuationSize})`);
-
+        this.steroidGroup.setAttribute('transform', `translate(${this.steroidPosition.x}, ${this.steroidPosition.y}) rotate(${this.steroidAngle}) scale(${this.fluctuationSize})`);
+        
         // Update debug circle position
         this.debugCircle.setAttribute('cx', this.steroidPosition.x);
         this.debugCircle.setAttribute('cy', this.steroidPosition.y);
