@@ -2,7 +2,7 @@ import { Player } from './player.js';
 import { Steroid } from './steroid.js';
 import { HUD } from './hud.js';
 import { GameArea } from './gameArea.js';
-import { SvgResourceHandler, AudioResourceHandler, InitResources } from "./resourceHandeler.js";
+import { SvgResourceHandler, AudioResourceHandler, InitResources } from "./resourceHandler.js";
 
 async function startGame() {
     const svgHandler = new SvgResourceHandler();
