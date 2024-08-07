@@ -1,13 +1,13 @@
 import { Thrust } from './thrust.js';
 import { Projectile } from './projectile.js'
 
-export class Needle {
+export class Player {
     constructor(svgElement) {
         this.svgElement = svgElement;
-        this.needle = svgElement.querySelector('#needle');
-        this.needlePosition = { x: 50, y: 50 };
-        this.needleAngle = 0; // Initial angle in degrees
-        this.needleRotationSpeed = 2; // degrees per frame
+        this.player = svgElement.querySelector('#needle');
+        this.position = { x: 50, y: 50 };
+        this.angle = 0; // Initial angle in degrees
+        this.rotationSpeed = 2; // degrees per frame
         this.thrust = new Thrust();
         this.thrusting = false;
         this.turningLeft = false;
@@ -24,7 +24,7 @@ export class Needle {
     init() {
         document.addEventListener('keydown', (e) => this.handleKeyDown(e));
         document.addEventListener('keyup', (e) => this.handleKeyUp(e));
-        this.updateNeedlePosition();
+        //this.updateNeedlePosition();
         requestAnimationFrame(() => this.updateNeedle());
     }
 
@@ -61,17 +61,17 @@ export class Needle {
 
     rotate() {
         if (this.turningLeft) {
-            this.needleAngle -= this.needleRotationSpeed;
+            this.angle -= this.rotationSpeed;
         }
         if (this.turningRight) {
-            this.needleAngle += this.needleRotationSpeed;
+            this.angle += this.rotationSpeed;
         }
-        this.needleAngle = (this.needleAngle + 360) % 360; // Normalize angle to 0-359 degrees
+        this.angle = (this.angle + 360) % 360; // Normalize angle to 0-359 degrees
         this.updateNeedlePosition();
     }
 
     getNeedleDimensions() {
-        const bbox = this.needle.getBBox();
+        const bbox = this.player.getBBox();
         return {
             width: bbox.width,
             height: bbox.height
@@ -83,49 +83,49 @@ export class Needle {
         const halfNeedleWidth = width / 2;
         const halfNeedleHeight = height / 2;
 
-        if (this.needlePosition.x < -halfNeedleWidth * 3) {
-            this.needlePosition.x = this.gameWidth + halfNeedleWidth * 3;
-        } else if (this.needlePosition.x > this.gameWidth + halfNeedleWidth * 3) {
-            this.needlePosition.x = -halfNeedleWidth * 3;
+        if (this.position.x < -halfNeedleWidth * 3) {
+            this.position.x = this.gameWidth + halfNeedleWidth * 3;
+        } else if (this.position.x > this.gameWidth + halfNeedleWidth * 3) {
+            this.position.x = -halfNeedleWidth * 3;
         }
 
-        if (this.needlePosition.y < -halfNeedleHeight) {
-            this.needlePosition.y = this.gameHeight + halfNeedleHeight;
-        } else if (this.needlePosition.y > this.gameHeight + halfNeedleHeight) {
-            this.needlePosition.y = -halfNeedleHeight;
+        if (this.position.y < -halfNeedleHeight) {
+            this.position.y = this.gameHeight + halfNeedleHeight;
+        } else if (this.position.y > this.gameHeight + halfNeedleHeight) {
+            this.position.y = -halfNeedleHeight;
         }
     }
 
     updateNeedlePosition() {
-        const bbox = this.needle.getBBox();
+        const bbox = this.player.getBBox();
         const cx = bbox.x + bbox.width / 2;
         const cy = bbox.y + bbox.height / 2;
 
-        const translateX = this.needlePosition.x - cx;
-        const translateY = this.needlePosition.y - cy;
+        const translateX = this.position.x - cx;
+        const translateY = this.position.y - cy;
         //console.log(`Position: (${this.needlePosition.x}, ${this.needlePosition.y}), Angle: ${this.needleAngle}`); //uncomment on debug purpose
 
         // Perform a single DOM write operation
-        this.needle.setAttribute('transform', `translate(${translateX}, ${translateY}) rotate(${this.needleAngle} ${cx} ${cy})`);
+        this.player.setAttribute('transform', `translate(${translateX}, ${translateY}) rotate(${this.angle} ${cx} ${cy})`);
     }
 
     shoot() {
         //const radians = this.needleAngle * (Math.PI / 180);
-        const projectileX = this.needlePosition.x;
-        const projectileY = this.needlePosition.y ;
+        const projectileX = this.position.x;
+        const projectileY = this.position.y ;
 
-        const projectile = new Projectile(projectileX, projectileY, this.needleAngle, this.svgElement);
+        const projectile = new Projectile(projectileX, projectileY, this.angle, this.svgElement);
         this.projectiles.push(projectile);
     }
     updateNeedle() {
         if (this.thrusting) {
-            this.thrust.applyThrust(this.needleAngle);
+            this.thrust.applyThrust(this.angle);
         } else {
             this.thrust.applyFriction();
         }
 
         this.rotate(); // Ensure rotation happens regardless of thrusting state
-        this.needlePosition = this.thrust.updatePosition(this.needlePosition);
+        this.position = this.thrust.updatePosition(this.position);
         this.checkBoundaries(); // Check and update boundaries
 
         this.updateNeedlePosition();
@@ -142,8 +142,8 @@ export class Needle {
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    const svgElement = document.getElementById('svgElement');
-    new Needle(svgElement);
-});
+// document.addEventListener('DOMContentLoaded', () => {
+//     const svgElement = document.getElementById('svgElement');
+//     new Needle(svgElement);
+// });
 
