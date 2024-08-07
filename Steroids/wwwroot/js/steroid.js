@@ -1,11 +1,12 @@
 import { Thrust } from './thrust.js';
+import { GameArea } from './gameArea.js';
 export class Steroid {
-    constructor(svgElement, id, needle, svgHandler) {
+    constructor(svgElement, id, player, svgHandler) {
         this.svgElement = svgElement;
         this.id = id;
-        this.needle = needle;
+        this.player = player;
         this.svgHandler = svgHandler;
-        this.steroidPosition = {
+        this.position = {
             x: Math.random() * svgElement.viewBox.baseVal.width,
             y: Math.random() * svgElement.viewBox.baseVal.height
         };
@@ -17,7 +18,8 @@ export class Steroid {
         this.fluctuationDelay = 300; // Delay in frames before next attack
         this.state = 'fluctuating'; // Initial state
 
-        this.steroidAngle = 0; // Initial angle
+        this.angle = 0; // Initial angle
+        this.gameArea = new GameArea();
 
         // // Uncomment on debug //Create a circle for debugging the position
         // this.debugCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
@@ -40,7 +42,7 @@ export class Steroid {
             this.svgElement.appendChild(this.steroidGroup);
         }
 
-        this.updateSteroidPosition();
+        this.updatePosition();
     }
 
     fluctuateSize() {
@@ -50,18 +52,25 @@ export class Steroid {
         }
     }
 
-    targetNeedle() {
-        const dx = this.needle.needlePosition.x - this.steroidPosition.x;
-        const dy = this.needle.needlePosition.y - this.steroidPosition.y;
-        this.steroidAngle = Math.atan2(dy, dx) * (180 / Math.PI); // Calculate angle in degrees
-        //console.log(`Targeting Needle at: (${this.needle.needlePosition.x}, ${this.needle.needlePosition.y}), Steroid Angle: ${this.steroidAngle}`);
+    targetPlayer() {
+        const dx = this.player.position.x - this.position.x;
+        const dy = this.player.position.y - this.position.y;
+        this.angle = Math.atan2(dy, dx) * (180 / Math.PI); // Calculate angle in degrees
+        //console.log(`Targeting player at: (${this.player.position.x}, ${this.player.position.y}), Steroid Angle: ${this.angle}`);
     }
-    updateSteroidPosition() {
+    getDimensions() {
+        const bbox = this.steroid.getBBox();
+        return {
+            width: bbox.width,
+            height: bbox.height
+        };
+    }
+    updatePosition() {
         if (!this.steroid) return; // Wait until the SVG is loaded
 
         if (this.state === 'fluctuating') {
             this.fluctuateSize();
-            this.targetNeedle();
+            this.targetPlayer();
 
             if (this.fluctuationCounter < this.fluctuationDelay) {
                 this.fluctuationCounter++;
@@ -71,8 +80,8 @@ export class Steroid {
             }
         } else if (this.state === 'moving') {
             // Instead of thrusting, just move towards the target position calculated by the thrust
-            this.thrust.applyThrust(this.steroidAngle);
-            this.steroidPosition = this.thrust.updatePosition(this.steroidPosition);
+            this.thrust.applyThrust(this.angle);
+            this.position = this.thrust.updatePosition(this.position);
 
             // After moving for a short distance, switch back to fluctuating state
             if (this.thrust.distanceTravelled >= 10) { // Adjust the distance as needed
@@ -82,7 +91,9 @@ export class Steroid {
         }
 
         // Update SVG element with new position and rotation
-        this.steroidGroup.setAttribute('transform', `translate(${this.steroidPosition.x}, ${this.steroidPosition.y}) rotate(${this.steroidAngle}) scale(${this.fluctuationSize})`);
+        this.steroidGroup.setAttribute('transform', `translate(${this.position.x}, ${this.position.y}) rotate(${this.angle}) scale(${this.fluctuationSize})`);
+
+        this.gameArea.checkSteroidBoundaries(this); // Check and update boundaries
         
         // // Uncomment on debug // Update debug circle position
         // this.debugCircle.setAttribute('cx', this.steroidPosition.x);

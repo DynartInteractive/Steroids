@@ -5,6 +5,8 @@
     { url: '/source/SVG/enemy/enemy_3.svg', id: 'enemy_3' },
     { url: '/source/SVG/enemy/enemy_4.svg', id: 'enemy_4' },
     { url: '/source/SVG/enemy/enemy_5.svg', id: 'enemy_5' },
+    { url: '/source/SVG/player/player.svg', id: 'player' },
+    { url: '/source/SVG/hud/hud.svg', id: 'hud' },
     // Add more SVG resources as needed
 ];
 

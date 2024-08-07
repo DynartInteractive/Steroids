@@ -1,11 +1,16 @@
 import { Thrust } from './thrust.js';
-import { Projectile } from './projectile.js'
+import { Projectile } from './projectile.js';
+import { GameArea } from './gameArea.js';
 
 export class Player {
-    constructor(svgElement) {
+    constructor(svgElement, svgHandler, id, hud, game) {
         this.svgElement = svgElement;
-        this.player = svgElement.querySelector('#needle');
-        this.position = { x: 50, y: 50 };
+        this.svgHandler = svgHandler;
+        this.id = id;
+        this.health = 10; // Initial health
+        this.maxHealth = 10; 
+        this.game = game;
+        this.position = { x: 50, y: 50 }; // Centered in the 1000x1000 viewBox
         this.angle = 0; // Initial angle in degrees
         this.rotationSpeed = 2; // degrees per frame
         this.thrust = new Thrust();
@@ -13,19 +18,36 @@ export class Player {
         this.turningLeft = false;
         this.turningRight = false;
         this.projectiles = [];
+        this.gameArea = new GameArea();
 
-        // Dimensions of the game area
-        this.gameWidth = svgElement.viewBox.baseVal.width;
-        this.gameHeight = svgElement.viewBox.baseVal.height;
-
-        this.init();
+        this.loadPlayerSvg();
     }
+    async loadPlayerSvg() {
+        try {
+            const svgElement = this.svgHandler.getResource('player');
+            if (svgElement) {
+                this.player = svgElement.cloneNode(true);
 
+                // Wrap the loaded SVG in a group
+                this.playerGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+                this.playerGroup.setAttribute('id', 'player-group');
+                this.playerGroup.appendChild(this.player);
+                
+                this.svgElement.appendChild(this.playerGroup);
+                
+                this.init();
+                this.updatePosition();
+            } else {
+                console.error('Player SVG not found in resources.');
+            }
+        } catch (error) {
+            console.error('Error loading player SVG:', error);
+        }
+    }
     init() {
         document.addEventListener('keydown', (e) => this.handleKeyDown(e));
         document.addEventListener('keyup', (e) => this.handleKeyUp(e));
-        //this.updateNeedlePosition();
-        requestAnimationFrame(() => this.updateNeedle());
+        requestAnimationFrame(() => this.updatePlayer());
     }
 
     handleKeyDown(event) {
@@ -67,57 +89,59 @@ export class Player {
             this.angle += this.rotationSpeed;
         }
         this.angle = (this.angle + 360) % 360; // Normalize angle to 0-359 degrees
-        this.updateNeedlePosition();
+        //console.log(`Position: ( Angle: ${this.angle}`); //uncomment on debug purpose
+        this.updatePosition();
+        
     }
 
-    getNeedleDimensions() {
+    getDimensions() {
         const bbox = this.player.getBBox();
         return {
             width: bbox.width,
             height: bbox.height
         };
     }
-
-    checkBoundaries() {
-        const { width, height } = this.getNeedleDimensions();
-        const halfNeedleWidth = width / 2;
-        const halfNeedleHeight = height / 2;
-
-        if (this.position.x < -halfNeedleWidth * 3) {
-            this.position.x = this.gameWidth + halfNeedleWidth * 3;
-        } else if (this.position.x > this.gameWidth + halfNeedleWidth * 3) {
-            this.position.x = -halfNeedleWidth * 3;
-        }
-
-        if (this.position.y < -halfNeedleHeight) {
-            this.position.y = this.gameHeight + halfNeedleHeight;
-        } else if (this.position.y > this.gameHeight + halfNeedleHeight) {
-            this.position.y = -halfNeedleHeight;
-        }
-    }
-
-    updateNeedlePosition() {
+    updatePosition() {
+        if (!this.player) return;
+        
         const bbox = this.player.getBBox();
         const cx = bbox.x + bbox.width / 2;
         const cy = bbox.y + bbox.height / 2;
+        //console.log('BBox:', bbox, 'Center:', { cx, cy }, 'Position:', this.position, 'Angle:', this.angle);
 
         const translateX = this.position.x - cx;
         const translateY = this.position.y - cy;
-        //console.log(`Position: (${this.needlePosition.x}, ${this.needlePosition.y}), Angle: ${this.needleAngle}`); //uncomment on debug purpose
+        //console.log(`Position: (${this.position.x}, ${this.position.y}), Angle: ${this.angle}`); //uncomment on debug purpose
 
-        // Perform a single DOM write operation
-        this.player.setAttribute('transform', `translate(${translateX}, ${translateY}) rotate(${this.angle} ${cx} ${cy})`);
+        this.playerGroup.setAttribute('transform', `translate(${translateX}, ${translateY}) rotate(${this.angle} ${cx} ${cy})`);
     }
-
     shoot() {
-        //const radians = this.needleAngle * (Math.PI / 180);
         const projectileX = this.position.x;
-        const projectileY = this.position.y ;
+        const projectileY = this.position.y;
 
-        const projectile = new Projectile(projectileX, projectileY, this.angle, this.svgElement);
+        const projectile = new Projectile(projectileX, projectileY, this.angle, this.svgElement, {
+            speed: 3, // Set the projectile speed
+            size: 0.5, // Set the projectile size
+            maxDistance: 50 // Set the maximum travel distance
+        });
         this.projectiles.push(projectile);
     }
-    updateNeedle() {
+    decreaseHealth(amount) {
+        this.health = Math.max(0, this.health - amount);
+        this.hud.updateHealthIndicator(this.health);
+        console.log(`Health decreased by ${amount}. Current health: ${this.health}`);
+        if (this.health === 0) {
+            console.log('Player is dead.');
+            this.game.gameOver(); // Notify the game of the game over
+        }
+    }
+
+    increaseHealth(amount) {
+        this.health = Math.min(this.maxHealth, this.health + amount);
+        this.hud.updateHealthIndicator(this.health);
+        console.log(`Health increased by ${amount}. Current health: ${this.health}`);
+    }
+    updatePlayer() {
         if (this.thrusting) {
             this.thrust.applyThrust(this.angle);
         } else {
@@ -126,24 +150,23 @@ export class Player {
 
         this.rotate(); // Ensure rotation happens regardless of thrusting state
         this.position = this.thrust.updatePosition(this.position);
-        this.checkBoundaries(); // Check and update boundaries
+        this.gameArea.checkPlayerBoundaries(this); // Check and update boundaries
 
-        this.updateNeedlePosition();
+        this.updatePosition();
 
         this.projectiles.forEach((projectile, index) => {
             projectile.updateProjectilePosition();
-            if (projectile.isOutOfBounds(this.gameWidth, this.gameHeight)) {
+            this.gameArea.checkProjectileBoundaries(projectile); // Wrap-around logic for projectiles
+
+            // Remove the projectile if it has reached its maximum distance
+            if (projectile.distanceTraveled >= projectile.maxDistance) {
                 projectile.remove();
                 this.projectiles.splice(index, 1);
             }
         });
 
-        requestAnimationFrame(() => this.updateNeedle());
+        requestAnimationFrame(() => this.updatePlayer());
     }
 }
 
-// document.addEventListener('DOMContentLoaded', () => {
-//     const svgElement = document.getElementById('svgElement');
-//     new Needle(svgElement);
-// });
 

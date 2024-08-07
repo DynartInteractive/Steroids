@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="hud" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 1400">
+  <defs>
+    <style>
+      .hud-cls-1 {
+        fill: #fff;
+      }
+
+      .hud-cls-2 {
+        fill: red;
+      }
+
+      .hud-cls-3 {
+        fill: blue;
+        letter-spacing: 0em;
+      }
+
+      .hud-cls-4 {
+        fill: #f0f;
+      }
+
+      .hud-cls-5 {
+        font-family: PFVideotext-Regular, 'PF Videotext';
+        font-size: 26.15px;
+      }
+
+      .hud-cls-6 {
+        fill: lime;
+      }
+
+      .hud-cls-7 {
+        fill: #ff0;
+      }
+    </style>
+  </defs>
+  <g id="hud">
+    <g id="hud">
+      <g id="TopRight">
+        <path id="TopRightPath" class="hud-cls-1" d="M817.64,0v6.5s441.87,0,441.87,0l59.75,59.74v109.45s.47.48.47.48l32.54,32.53v110.03s41.23,41.23,41.23,41.23v95.16s6.5,0,6.5,0V98.59S1301.41,0,1301.41,0h-483.77ZM1393.5,308.46l-14.82-14.81v-58.53s14.82,14.82,14.82,14.82v58.52ZM1355.52,211.95l19.92,19.92v63.12s18.06,18.07,18.06,18.07v42.31s-37.98-37.98-37.98-37.98v-105.44ZM1264.11,6.5h34.61s94.78,94.78,94.78,94.78v144.06s-70.99-70.99-70.99-70.99v-109.45s-.47-.48-.47-.48l-57.92-57.92Z"/>
+        <g id="sizeIndicator">
+          <polygon id="sizeIndicator_2" class="hud-cls-1" points="1346.63 191 1327.17 171.58 1327.17 145.49 1346.63 164.96 1346.63 191"/>
+          <polygon id="sizeIndicator_1" class="hud-cls-1" points="1346.63 155.52 1327.17 136.1 1327.17 110.01 1346.63 129.47 1346.63 155.52"/>
+          <polygon id="sizeIndicator_0" class="hud-cls-1" points="1346.63 120.03 1327.17 100.61 1327.17 74.52 1346.63 93.99 1346.63 120.03"/>
+        </g>
+        <g id="healthIndicator">
+          <polygon id="healthIndicator_0" class="hud-cls-1" points="1227.27 12.91 1273.42 59.15 1211.53 59.15 1165.29 12.91 1227.27 12.91"/>
+          <polygon id="healthIndicator_1" class="hud-cls-1" points="1142.38 12.91 1188.53 59.15 1126.65 59.15 1080.4 12.91 1142.38 12.91"/>
+          <polygon id="healthIndicator_2" class="hud-cls-1" points="1103.65 59.15 1041.76 59.15 995.52 12.91 1057.5 12.91 1103.65 59.15"/>
+          <polygon id="healthIndicator_3" class="hud-cls-1" points="1018.94 59.15 957.06 59.15 910.81 12.91 972.8 12.91 1018.94 59.15"/>
+          <polygon id="healthIndicator_4" class="hud-cls-1" points="932.53 59.15 870.65 59.15 824.4 12.91 886.39 12.91 932.53 59.15"/>
+        </g>
+      </g>
+      <path id="BottomLeft" class="hud-cls-1" d="M612.42,1353.75h-222.24l-43.26,43.26H101.45l-37.04-37.04v-35.96l-38.98-38.98v-110.01l-12.36-12.36v-37.4l-10.07-10.07v-33.9H0v218.5l100.21,100.21h247.96l22.96-22.96h98.08l20.29-20.29h122.92v-3ZM3,1156.82l19.43,19.43v110.01l38.98,38.98v31.72l-58.42-58.42v-141.73ZM467.97,1374.04h-93.84l17.3-17.3h93.84l-17.3,17.3Z"/>
+      <path id="BottomRight" class="hud-cls-1" d="M787.58,1356.74h122.92s20.29,20.29,20.29,20.29h98.08s22.96,22.96,22.96,22.96h247.96s100.21-100.21,100.21-100.21v-218.5s-3,0-3,0v33.9s-10.07,10.07-10.07,10.07v37.4s-12.36,12.36-12.36,12.36v110.01s-38.98,38.98-38.98,38.98v35.96s-37.04,37.04-37.04,37.04h-245.48s-43.26-43.26-43.26-43.26h-222.24s0,3,0,3ZM1397,1298.55l-58.42,58.42v-31.72s38.98-38.98,38.98-38.98v-110.01s19.43-19.43,19.43-19.43v141.73ZM914.73,1356.74h93.84s17.3,17.3,17.3,17.3h-93.84s-17.3-17.3-17.3-17.3Z"/>
+      <g id="TopLeft">
+        <path id="TopLeftPath" class="hud-cls-1" d="M98.59,0L0,98.59v356.53h6.5v-95.16l41.23-41.23v-110.03l32.54-32.53.47-.48v-109.45L140.49,6.5h441.87V0H98.59ZM6.5,249.94l14.82-14.82v58.53l-14.82,14.81v-58.52ZM44.48,317.39l-37.98,37.98v-42.31l18.06-18.07v-63.12l19.92-19.92v105.44ZM77.96,64.42l-.47.48v109.45L6.5,245.34V101.28L101.28,6.5h34.61l-57.92,57.92Z"/>
+        <g id="distanceIndicator">
+          <polygon id="distanceIndicator_2" class="hud-cls-1" points="53.37 191 72.83 171.58 72.83 145.49 53.37 164.96 53.37 191"/>
+          <polygon id="distanceIndicator_1" class="hud-cls-1" points="53.37 155.52 72.83 136.1 72.83 110.01 53.37 129.47 53.37 155.52"/>
+          <polygon id="distanceIndicator_0" class="hud-cls-1" points="53.37 120.03 72.83 100.61 72.83 74.52 53.37 93.99 53.37 120.03"/>
+        </g>
+      </g>
+      <g id="BlastIndicator">
+        <g id="BonusIndicator_0">
+          <rect class="hud-cls-1" x="155.68" y="24.05" width="10.73" height="56.44"/>
+        </g>
+        <g id="BonusIndicator_1">
+          <rect class="hud-cls-1" x="178.82" y="24.05" width="10.73" height="56.44"/>
+        </g>
+        <g id="BonusIndicator_2">
+          <rect class="hud-cls-1" x="201.96" y="24.05" width="10.73" height="56.44"/>
+        </g>
+        <g id="BonusIndicator_3">
+          <rect class="hud-cls-1" x="225.1" y="24.05" width="10.73" height="56.44"/>
+        </g>
+        <g id="BonusIndicator_4">
+          <rect class="hud-cls-1" x="248.23" y="24.05" width="10.73" height="56.44"/>
+        </g>
+        <g id="BonusIndicator_5">
+          <rect class="hud-cls-1" x="271.37" y="24.05" width="10.73" height="56.44"/>
+        </g>
+        <g id="BonusIndicator_6">
+          <rect class="hud-cls-1" x="294.51" y="24.05" width="10.73" height="56.44"/>
+        </g>
+        <g id="BonusIndicator_7">
+          <rect class="hud-cls-1" x="317.65" y="24.05" width="10.73" height="56.44"/>
+        </g>
+        <g id="BonusIndicator_8">
+          <rect class="hud-cls-1" x="340.78" y="24.05" width="10.73" height="56.44"/>
+        </g>
+        <g id="BonusIndicator_9">
+          <rect class="hud-cls-1" x="363.92" y="24.05" width="10.73" height="56.44"/>
+        </g>
+        <g id="BonusIUnderline_0">
+          <polygon class="hud-cls-1" points="103.03 126.15 101.04 124.16 137.33 87.86 382.21 87.86 382.21 90.68 138.5 90.68 103.03 126.15"/>
+          <circle class="hud-cls-1" cx="99.86" cy="126.66" r="8.05"/>
+        </g>
+        <g id="BonusIUnderLine_1">
+          <polygon class="hud-cls-1" points="127.1 114.67 126.6 114.17 143.43 97.34 268.53 97.34 268.53 98.05 143.72 98.05 127.1 114.67"/>
+        </g>
+        <g id="BonusIUnderline_2">
+          <polygon class="hud-cls-1" points="277.73 108.68 238.77 108.68 238.77 107.97 277.44 107.97 288.07 97.34 382.37 97.34 382.37 98.05 288.36 98.05 277.73 108.68"/>
+        </g>
+        <text class="hud-cls-5" transform="translate(294.51 120.52)"><tspan class="hud-cls-2" x="0" y="0">B</tspan><tspan class="hud-cls-7" x="16.47" y="0">o</tspan><tspan class="hud-cls-6" x="32.4" y="0">n</tspan><tspan class="hud-cls-3" x="48.35" y="0">u</tspan><tspan class="hud-cls-4" x="64.3" y="0">s</tspan></text>
+      </g>
+    </g>
+  </g>
+</svg>

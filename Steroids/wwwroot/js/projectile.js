@@ -1,9 +1,13 @@
 export class Projectile {
-    constructor(x, y, angle, svgElement) {
+    constructor(x, y, angle, svgElement, options ={}) {
         this.position = { x: x, y: y };
+        this.startPosition = { x: x, y: y };
         this.angle = angle;
-        this.speed = 3;
-        this.radius = 0.5; // Radius of the projectile
+        this.speed = options.speed || 3;
+        this.radius = options.radius || 0.5;
+        this.maxDistance = options.maxDistance || 500;
+        
+        this.distanceTraveled = 0;
 
         this.element = document.createElementNS("http://www.w3.org/2000/svg", "circle");
         this.element.setAttribute("r", this.radius);
@@ -17,11 +21,20 @@ export class Projectile {
 
     updateProjectilePosition() {
         const radians = (this.angle - 90) * (Math.PI / 180);
-        this.position.x += this.speed * Math.cos(radians);
-        this.position.y += this.speed * Math.sin(radians);
+        const dx = this.speed * Math.cos(radians);
+        const dy = this.speed * Math.sin(radians);
+
+        this.position.x += dx;
+        this.position.y += dy;
+        this.distanceTraveled += Math.sqrt(dx * dx + dy * dy);
 
         this.element.setAttribute("cx", this.position.x);
         this.element.setAttribute("cy", this.position.y);
+
+        // Check if the projectile has traveled the maximum distance
+        if (this.distanceTraveled >= this.maxDistance) {
+            this.remove();
+        }
     }
 
     isOutOfBounds(width, height) {
