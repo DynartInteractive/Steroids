@@ -1,47 +1,48 @@
 import { Thrust } from './thrust.js';
 export class Steroid {
-    constructor(svgElement, id, needle) {
+    constructor(svgElement, id, needle, svgHandler) {
         this.svgElement = svgElement;
         this.id = id;
         this.needle = needle;
+        this.svgHandler = svgHandler;
         this.steroidPosition = {
             x: Math.random() * svgElement.viewBox.baseVal.width,
             y: Math.random() * svgElement.viewBox.baseVal.height
         };
-        this.thrust = new Thrust(1,0.3);
+        this.thrust = new Thrust(1, 0.3);
         this.fluctuationSize = 1; // Initial fluctuation size
         this.fluctuationSpeed = 0.005; // Slower fluctuation speed
         this.fluctuationDirection = 1; // Direction of size fluctuation
         this.fluctuationCounter = 0; // Counter for fluctuation time
         this.fluctuationDelay = 300; // Delay in frames before next attack
         this.state = 'fluctuating'; // Initial state
-        
+
         this.steroidAngle = 0; // Initial angle
 
-        // Create a circle for debugging the position
-        this.debugCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        this.debugCircle.setAttribute("r", 5);
-        this.debugCircle.setAttribute("fill", "red");
-        this.svgElement.appendChild(this.debugCircle);
-        
-        this.loadSvg(`/source/SVG/enemy/${id}.svg`)
-            .then(() => this.updateSteroidPosition());
-    }
-    async loadSvg(url) {
-        const response = await fetch(url);
-        const svgText = await response.text();
-        const parser = new DOMParser();
-        const svgDoc = parser.parseFromString(svgText, 'image/svg+xml');
-        this.steroid = svgDoc.documentElement;
+        // // Uncomment on debug //Create a circle for debugging the position
+        // this.debugCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        // this.debugCircle.setAttribute("r", 5);
+        // this.debugCircle.setAttribute("fill", "red");
+        //this.svgElement.appendChild(this.debugCircle);
 
-        // Wrap the loaded SVG in a group
-        this.steroidGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
-        this.steroidGroup.setAttribute('id', `${this.id}-group`);
-        this.steroidGroup.appendChild(this.steroid);
-
-        this.svgElement.appendChild(this.steroidGroup);
-        return Promise.resolve();
     }
+    initialize() {
+        // Load the SVG from the resource handler
+        const svgElement = this.svgHandler.getResource(this.id);
+        if (svgElement) {
+            this.steroid = svgElement.cloneNode(true);
+
+            // Wrap the loaded SVG in a group
+            this.steroidGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+            this.steroidGroup.setAttribute('id', `${this.id}-group`);
+            this.steroidGroup.appendChild(this.steroid);
+
+            this.svgElement.appendChild(this.steroidGroup);
+        }
+
+        this.updateSteroidPosition();
+    }
+
     fluctuateSize() {
         this.fluctuationSize += this.fluctuationSpeed * this.fluctuationDirection;
         if (this.fluctuationSize > 1.2 || this.fluctuationSize < 0.8) {
@@ -83,8 +84,16 @@ export class Steroid {
         // Update SVG element with new position and rotation
         this.steroidGroup.setAttribute('transform', `translate(${this.steroidPosition.x}, ${this.steroidPosition.y}) rotate(${this.steroidAngle}) scale(${this.fluctuationSize})`);
         
-        // Update debug circle position
-        this.debugCircle.setAttribute('cx', this.steroidPosition.x);
-        this.debugCircle.setAttribute('cy', this.steroidPosition.y);
+        // // Uncomment on debug // Update debug circle position
+        // this.debugCircle.setAttribute('cx', this.steroidPosition.x);
+        // this.debugCircle.setAttribute('cy', this.steroidPosition.y);
+    }
+    remove() {
+        if (this.steroidGroup) {
+            this.steroidGroup.remove();
+        }
+        if (this.debugCircle) {
+            this.debugCircle.remove();
+        }
     }
 }
