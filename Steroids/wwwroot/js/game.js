@@ -7,10 +7,12 @@ import { BonusItem } from "./bonusItem.js";
 import { DrawTitle } from "./drawTitle.js";
 
 let gameInstance = null;
+let svgHandler = null;
+let audioHandler = null;
 
-async function startGame() {
-    const svgHandler = new SvgResourceHandler();
-    const audioHandler = new AudioResourceHandler();
+async function initializeGameResources() {
+    svgHandler = new SvgResourceHandler();
+    audioHandler = new AudioResourceHandler();
     const initResources = new InitResources();
 
     // Show loading screen
@@ -22,7 +24,10 @@ async function startGame() {
 
     // Hide loading screen
     loadingScreen.style.display = 'none';
-
+    
+    return { svgHandler, audioHandler };
+}
+async function startGame() {
     // Start or restart the game
     if (gameInstance) {
         gameInstance.reset();
@@ -48,6 +53,12 @@ class Game {
 
         this.initLevel(this.level).then(() => this.update());
         this.spawnBonusItem()
+        
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                this.togglePause();
+            }
+        });
     }
     reset() {
         // Reset the game state
@@ -98,6 +109,7 @@ class Game {
         levelUpMessage.style.transform = 'translate(-50%, -50%)';
         levelUpMessage.style.fontSize = '48px';
         levelUpMessage.style.color = 'white';
+        levelUpMessage.style.fontFamily = "'VT323', monospace";
         levelUpMessage.style.zIndex = '10';
         document.body.appendChild(levelUpMessage);
 
@@ -113,8 +125,40 @@ class Game {
             this.initLevel(this.level);
         }, 2000); // 2 seconds delay
     }
+    togglePause() {
+        if (this.isPaused) {
+            this.isPaused = false;
+            this.update();
+        } else {
+            this.isPaused = true;
+            cancelAnimationFrame(this.animationFrame);
+            this.showPauseMessage();
+        }
+    }
 
+    showPauseMessage() {
+        const pauseMessage = document.createElement('div');
+        pauseMessage.textContent = 'Game Paused';
+        pauseMessage.style.position = 'absolute';
+        pauseMessage.style.top = '50%';
+        pauseMessage.style.left = '50%';
+        pauseMessage.style.transform = 'translate(-50%, -50%)';
+        pauseMessage.style.fontSize = '48px';
+        pauseMessage.style.color = 'white';
+        pauseMessage.style.zIndex = '10';
+        pauseMessage.id = 'pauseMessage';
+        document.body.appendChild(pauseMessage);
+    }
+
+    hidePauseMessage() {
+        const pauseMessage = document.getElementById('pauseMessage');
+        if (pauseMessage) {
+            pauseMessage.remove();
+        }
+    }
     update() {
+        if (this.isPaused) return;
+
         this.steroids.forEach(steroid => {
             steroid.updatePosition();
         });
@@ -123,7 +167,7 @@ class Game {
         this.checkPlayerEnemyCollisions();
         this.checkPlayerBonusCollision();
 
-        requestAnimationFrame(() => this.update());
+        this.animationFrame = requestAnimationFrame(() => this.update());
     }
     checkCollisions() {
         this.player.projectiles.forEach((projectile, pIndex) => {
@@ -210,4 +254,14 @@ class Game {
     }
 }
 
-document.addEventListener('DOMContentLoaded', startGame);
+// Wait for DOM to load, then display the title screen
+document.addEventListener('DOMContentLoaded', async () => {
+    const gameArea = document.getElementById('svgElement');
+
+    // Initialize resources first
+    const { svgHandler, audioHandler } = await initializeGameResources();
+
+    // Draw the title screen and pass startGame as a callback
+    const drawTitle = new DrawTitle(gameArea, startGame);
+    drawTitle.drawTitle();
+});

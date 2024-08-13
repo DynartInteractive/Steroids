@@ -3,6 +3,11 @@
 }
 <main tabindex="0">
     <div id="gameArea">
+        <div id="titleScreen">
+            <div id="titleText"></div>
+            <div id="startText">PRESS ANY KEY TO START</div>
+        </div>
+        
         <div id="loadingScreen" style="display: none;">Loading...</div>
         <svg id="svgElement" viewBox="0 0 100 100">
             <g id="steroids"></g>
@@ -12,4 +17,5 @@
         </svg>
     </div>
 </main>
+<script type="module" src="~/js/drawTitle.js" asp-append-version="true"></script>
 <script type="module" src="~/js/game.js" asp-append-version="true"></script>
