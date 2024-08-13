@@ -4,6 +4,9 @@ import { HUD } from './hud.js';
 import { GameArea } from './gameArea.js';
 import { SvgResourceHandler, AudioResourceHandler, InitResources } from "./resourceHandler.js";
 import { BonusItem } from "./bonusItem.js";
+import { DrawTitle } from "./drawTitle.js";
+
+let gameInstance = null;
 
 async function startGame() {
     const svgHandler = new SvgResourceHandler();
@@ -20,8 +23,12 @@ async function startGame() {
     // Hide loading screen
     loadingScreen.style.display = 'none';
 
-    // Start the game
-    new Game(document.getElementById('svgElement'), svgHandler, audioHandler);
+    // Start or restart the game
+    if (gameInstance) {
+        gameInstance.reset();
+    } else {
+        gameInstance = new Game(document.getElementById('svgElement'), svgHandler, audioHandler);
+    }
 }
 class Game {
     constructor(svgElement, svgHandler, audioHandler) {
@@ -42,6 +49,17 @@ class Game {
         this.initLevel(this.level).then(() => this.update());
         this.spawnBonusItem()
     }
+    reset() {
+        // Reset the game state
+        this.level = 1;
+        this.score = 0;
+        this.steroids = [];
+        this.bonusItem = null;
+        this.lastCollisionTime = 0;
+        this.player.reset(); // Assume you add a reset method to Player
+        this.initLevel(this.level).then(() => this.update());
+        this.spawnBonusItem();
+    }
     async initLevel(level) {
         this.cleanUpSteroids();
         this.steroids = [];
@@ -61,9 +79,13 @@ class Game {
     spawnBonusItem() {
         const bonusTypes = ['health_up', 'health_dg', 'player_up', 'player_dg', 'projectile_up', 'projectile_dg', 'blast_charge'];
         const randomType = bonusTypes[Math.floor(Math.random() * bonusTypes.length)];
-        this.bonusItem = new BonusItem(randomType, this.svgElement, this.svgHandler, this.gameArea);
+        this.bonusItem = new BonusItem(randomType, this.svgElement, this.svgHandler, this.gameArea, () => this.scheduleNextBonusItem());
+        console.log(`Spawned bonus item: ${randomType}`);
     }
-
+    scheduleNextBonusItem() {
+        const spawnDelay = Math.random() * (15000 - 3000) + 3000; // Random delay between 3 and 15 seconds
+        setTimeout(() => this.spawnBonusItem(), spawnDelay);
+    }
     nextLevel() {
         this.level += 1;
 
@@ -144,7 +166,7 @@ class Game {
         if (this.bonusItem && this.isCollision(this.player, this.bonusItem)) {
             this.bonusItem.collect(this.player);
             this.bonusItem = null;
-            setTimeout(() => this.spawnBonusItem(), 1000); // Spawn a new bonus item after 5 seconds
+            setTimeout(() => this.spawnBonusItem(), 8000); // Spawn a new bonus item after 5 seconds
         }
     }
 
@@ -179,6 +201,12 @@ class Game {
 
         // Stop the game loop
         cancelAnimationFrame(this.animationFrame);
+        
+        setTimeout(() => {
+            gameOverMessage.remove();
+            const drawTitle = new DrawTitle(this.svgElement, startGame);
+            drawTitle.drawTitle();
+        }, 3000); // Return to the title screen after 3 seconds
     }
 }
 

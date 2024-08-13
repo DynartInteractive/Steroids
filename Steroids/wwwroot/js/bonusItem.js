@@ -11,15 +11,6 @@
         this.loadBonusSvg();
         this.scheduleRemoval();
     }
-    getDimensions() {
-        if (!this.bonus) return { width: 0, height: 0 };
-        const bbox = this.bonus.getBBox();
-        return {
-            width: bbox.width,
-            height: bbox.height
-        };
-    }
-
     async loadBonusSvg() {
         try {
             const svgElement = this.svgHandler.getResource(this.type);
@@ -40,11 +31,19 @@
             console.error('Error loading bonus SVG:', error);
         }
     }
-
+    getDimensions() {
+        if (!this.bonus) return { width: 0, height: 0 };
+        const bbox = this.bonus.getBBox();
+        return {
+            width: bbox.width,
+            height: bbox.height
+        };
+    }
     scheduleRemoval() {
+        const removeTime = Math.random() * (15000 - 3000) + 3000; // Random time between 3-15 seconds
         setTimeout(() => {
             this.remove();
-        }, 5000); // Remove after 5 seconds
+        }, removeTime);
     }
 
     collect(player) {
@@ -57,27 +56,39 @@
                 }
                 break;
             case 'health_dg':
-                player.decreaseHealth(1);
+                if (player.health === 1) {
+                    player.addScore(-100);
+                } else {
+                    player.decreaseHealth(1);
+                }
                 break;
             case 'player_up':
-                if (player.level < player.maxPlayerLevel) {
+                if (player.playerLevel < player.maxPlayerLevel) {
                     player.upgradePlayer();
                 } else {
                     player.addScore(100);
                 }
                 break;
             case 'player_dg':
-                player.downgradePlayer();
+                if (player.playerLevel === 0) {
+                    player.addScore(-100);
+                } else {
+                    player.downgradePlayer();
+                }
                 break;
-            case 'size_up':
+            case 'projectile_up':
                 if (player.projectileSizeLevel < player.maxProjectileSizeLevel) {
                     player.upgradeProjectileSize();
                 } else {
                     player.addScore(100);
                 }
                 break;
-            case 'size_dg':
-                player.downgradeProjectileSize();
+            case 'projectile_dg':
+                if (player.projectileSizeLevel === 0) {
+                    player.addScore(-100);
+                } else {
+                    player.addScore(100);
+                }
                 break;
             case 'blast_charge':
                 if (player.bonusIndicators < 10) {
@@ -93,6 +104,10 @@
     remove() {
         if (this.bonusGroup) {
             this.bonusGroup.remove();
+            console.log(`${this.type} bonus item removed.`);
+            if (this.onRemoveCallback) {
+                this.onRemoveCallback(); // Trigger the callback to spawn a new item
+            }
         }
     }
 }
