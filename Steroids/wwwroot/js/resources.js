@@ -7,6 +7,13 @@
     { url: '/source/SVG/enemy/enemy_5.svg', id: 'enemy_5' },
     { url: '/source/SVG/player/player.svg', id: 'player' },
     { url: '/source/SVG/hud/hud.svg', id: 'hud' },
+    { url: '/source/SVG/bonus/player_up.svg', id: 'player_up' },
+    { url: '/source/SVG/bonus/player_dg.svg', id: 'player_dg' },
+    { url: '/source/SVG/bonus/projectile_up.svg', id: 'projectile_up' },
+    { url: '/source/SVG/bonus/projectile_dg.svg', id: 'projectile_dg' },
+    { url: '/source/SVG/bonus/health_up.svg', id: 'health_up' },
+    { url: '/source/SVG/bonus/health_dg.svg', id: 'health_dg' },
+    { url: '/source/SVG/bonus/blast_charge.svg', id: 'blast_charge' }
     // Add more SVG resources as needed
 ];
 

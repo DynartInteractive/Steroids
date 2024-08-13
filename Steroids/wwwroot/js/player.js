@@ -1,6 +1,7 @@
 import { Thrust } from './thrust.js';
 import { Projectile } from './projectile.js';
 import { GameArea } from './gameArea.js';
+import { HUD } from "./hud.js";
 
 export class Player {
     constructor(svgElement, svgHandler, id, hud, game) {
@@ -9,6 +10,11 @@ export class Player {
         this.id = id;
         this.health = 10; // Initial health
         this.maxHealth = 10; 
+        this.playerLevel = 0; 
+        this.maxPlayerLevel = 3;
+        this.projectileSizeLevel = 0;
+        this.maxProjectileSizeLevel = 3;
+        this.hud = hud;
         this.game = game;
         this.position = { x: 50, y: 50 }; // Centered in the 1000x1000 viewBox
         this.angle = 0; // Initial angle in degrees
@@ -48,6 +54,55 @@ export class Player {
         document.addEventListener('keydown', (e) => this.handleKeyDown(e));
         document.addEventListener('keyup', (e) => this.handleKeyUp(e));
         requestAnimationFrame(() => this.updatePlayer());
+    }
+    
+    // Upgrade and downgrade player, projectile size and health
+    upgradePlayer() {
+        if (this.playerLevel < this.maxPlayerLevel) {
+            this.playerLevel += 1;
+            this.hud.updateDistanceIndicator(this.playerLevel);
+        }
+    }
+
+    downgradePlayer() {
+        if (this.playerLevel > 0) {
+            this.playerLevel -= 1;
+            this.hud.updateDistanceIndicator(this.playerLevel);
+        }
+    }
+    upgradeProjectileSize() {
+        if (this.projectileSizeLevel < this.maxProjectileSizeLevel) {
+            this.projectileSizeLevel += 1;
+            this.hud.updateSizeIndicator(this.projectileSizeLevel);
+        }
+    }
+    downgradeProjectileSize() {
+        if (this.projectileSizeLevel > 0) {
+            this.projectileSizeLevel -= 1;
+            this.hud.updateSizeIndicator(this.projectileSizeLevel);
+        }
+    }
+    chargeBlastWave() {
+        this.hud.updateBonusIndicator(10); // Assume 10 is fully charged
+        console.log('BlastWave fully charged!');
+    }
+    decreaseHealth(amount) {
+        this.health = Math.max(0, this.health - amount);
+        this.hud.updateHealthIndicator(this.health);
+        console.log(`Health decreased by ${amount}. Current health: ${this.health}`);
+        if (this.health === 0) {
+            console.log('Player is dead.');
+            this.game.gameOver(); // Notify the game of the game over
+        }
+    }
+    addScore(score) {
+        this.game.score += score;
+    }
+
+    increaseHealth(amount) {
+        this.health = Math.min(this.maxHealth, this.health + amount);
+        this.hud.updateHealthIndicator(this.health);
+        console.log(`Health increased by ${amount}. Current health: ${this.health}`);
     }
 
     handleKeyDown(event) {
@@ -95,6 +150,7 @@ export class Player {
     }
 
     getDimensions() {
+        if (!this.player) return { width: 0, height: 0 };
         const bbox = this.player.getBBox();
         return {
             width: bbox.width,
@@ -120,27 +176,13 @@ export class Player {
         const projectileY = this.position.y;
 
         const projectile = new Projectile(projectileX, projectileY, this.angle, this.svgElement, {
-            speed: 3, // Set the projectile speed
-            size: 0.5, // Set the projectile size
-            maxDistance: 50 // Set the maximum travel distance
+            speed: 3 + this.playerLevel, // Set the projectile speed
+            size: 0.5 + this.projectileSizeLevel, // Set the projectile size
+            maxDistance: 50 + (this.playerLevel * 10) // Set the maximum travel distance
         });
         this.projectiles.push(projectile);
     }
-    decreaseHealth(amount) {
-        this.health = Math.max(0, this.health - amount);
-        this.hud.updateHealthIndicator(this.health);
-        console.log(`Health decreased by ${amount}. Current health: ${this.health}`);
-        if (this.health === 0) {
-            console.log('Player is dead.');
-            this.game.gameOver(); // Notify the game of the game over
-        }
-    }
-
-    increaseHealth(amount) {
-        this.health = Math.min(this.maxHealth, this.health + amount);
-        this.hud.updateHealthIndicator(this.health);
-        console.log(`Health increased by ${amount}. Current health: ${this.health}`);
-    }
+    
     updatePlayer() {
         if (this.thrusting) {
             this.thrust.applyThrust(this.angle);

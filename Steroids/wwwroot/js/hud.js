@@ -89,29 +89,43 @@
     resetHealthIndicators() {
         this.healthIndicators.forEach(indicator => indicator.style.display = 'block');
     }
-    updateDistanceIndicator(level) {
+    updateDistanceIndicator(playerLevel) {
         this.resetDistanceIndicators();
-        for (let i = 0; i < level; i++) {
+        for (let i = 0; i < playerLevel; i++) {
             this.distanceIndicators[i].style.display = 'block';
         }
     }
 
-    updateSizeIndicator(level) {
+    updateSizeIndicator(projectileSizeLevel) {
         this.resetSizeIndicators();
-        for (let i = 0; i < level; i++) {
+        for (let i = 0; i < projectileSizeLevel; i++) {
             this.sizeIndicators[i].style.display = 'block';
         }
     }
 
-    updateBonusIndicator(level) {
+    updateBonusIndicator(bonusLevel) {
         this.resetBonusIndicators();
-        for (let i = 0; i < level; i++) {
+        for (let i = 0; i < bonusLevel; i++) {
             this.bonusIndicators[i].style.display = 'block';
         }
     }
     updateHealthIndicator(health) {
+        const maxHealth = 10;  // Assuming max health is 10
+        const indicatorsCount = this.healthIndicators.length;  // Total number of visual indicators
+
         this.healthIndicators.forEach((indicator, index) => {
-            indicator.style.display = index < health ? 'block' : 'none';
+            // Calculate which indicators should be fully filled or half-filled
+            const threshold = (index + 1) * 2;
+
+            console.log(`Updating indicator ${index}: Health = ${health}, Threshold = ${threshold}`);
+
+            if (health >= threshold) {
+                indicator.setAttribute('opacity', '1');  // Fully filled indicator
+            } else if (health === threshold - 1) {
+                indicator.setAttribute('opacity', '0.5');  // Half-filled indicator
+            } else {
+                indicator.setAttribute('opacity', '0.1');  // Mostly transparent for "empty" state
+            }
         });
     }
 }

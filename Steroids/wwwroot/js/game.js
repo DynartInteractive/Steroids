@@ -3,6 +3,7 @@ import { Steroid } from './steroid.js';
 import { HUD } from './hud.js';
 import { GameArea } from './gameArea.js';
 import { SvgResourceHandler, AudioResourceHandler, InitResources } from "./resourceHandler.js";
+import { BonusItem } from "./bonusItem.js";
 
 async function startGame() {
     const svgHandler = new SvgResourceHandler();
@@ -28,23 +29,23 @@ class Game {
         this.svgHandler = svgHandler;
         this.audioHandler = audioHandler;
         this.gameArea = new GameArea();
-        this.player = new Player(svgElement, svgHandler);
+        
         this.hud = new HUD(svgElement, svgHandler, this.gameArea);
+        this.player = new Player(svgElement, svgHandler, 'player',this.hud, this);
+
         this.steroids = [];
+        this.bonusItem = null;
         this.level = 1;
         this.score = 0;
+        this.lastCollisionTime = 0;
 
         this.initLevel(this.level).then(() => this.update());
+        this.spawnBonusItem()
     }
     async initLevel(level) {
         this.cleanUpSteroids();
         this.steroids = [];
         await this.initSteroid(level);
-
-        // Update HUD indicators based on the level and other parameters
-        this.hud.updateDistanceIndicator(level);
-        this.hud.updateSizeIndicator(level);
-        this.hud.updateBonusIndicator(level);
     }
     async initSteroid(level) {
         const numEnemies = Math.min(level, 6); // Ensure we have at most 6 enemies
@@ -56,6 +57,11 @@ class Game {
                 this.steroids.push(steroid);
             }
         }
+    }
+    spawnBonusItem() {
+        const bonusTypes = ['health_up', 'health_dg', 'player_up', 'player_dg', 'projectile_up', 'projectile_dg', 'blast_charge'];
+        const randomType = bonusTypes[Math.floor(Math.random() * bonusTypes.length)];
+        this.bonusItem = new BonusItem(randomType, this.svgElement, this.svgHandler, this.gameArea);
     }
 
     nextLevel() {
@@ -93,6 +99,7 @@ class Game {
 
         this.checkCollisions();
         this.checkPlayerEnemyCollisions();
+        this.checkPlayerBonusCollision();
 
         requestAnimationFrame(() => this.update());
     }
@@ -123,7 +130,7 @@ class Game {
         const currentTime = performance.now();
         this.steroids.forEach(steroid => {
             if (this.isCollision(this.player, steroid)) {
-                if (currentTime - this.lastCollisionTime >= 1) { // Apply damage every second
+                if (currentTime - this.lastCollisionTime >= 1000) { // Apply damage every second
                     this.player.decreaseHealth(1);
                     this.lastCollisionTime = currentTime;
                     console.log(`megbasz`);
@@ -131,6 +138,14 @@ class Game {
             }
             
         });
+    }
+    
+    checkPlayerBonusCollision() {
+        if (this.bonusItem && this.isCollision(this.player, this.bonusItem)) {
+            this.bonusItem.collect(this.player);
+            this.bonusItem = null;
+            setTimeout(() => this.spawnBonusItem(), 1000); // Spawn a new bonus item after 5 seconds
+        }
     }
 
     isCollision(entity1, entity2) {
