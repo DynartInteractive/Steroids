@@ -1,0 +1,22 @@
+﻿- bonus items
+    draw blast_charge.svg for bonus indicator filler
+   
+-game
+    logic implementation
+        level up
+            1-6 levels 1,2 ... 6 enemy count
+            7-12 levels 3, 4, 5, 6, 6, 6 enemy count but splitting the enemies in half size after shooting them
+            12+ levels 6 enemies but can shot a short distance blast wave to damage the player
+
+delta time implementation 
+    - game loop
+    - enemy movement bug (recalculating the position on player leaving the screen)
+    - collision detection (need to be more precise)
+        
+refactor
+    get Dimensions
+
+score handling
+    - score display
+    - score display on game over screen
+    
