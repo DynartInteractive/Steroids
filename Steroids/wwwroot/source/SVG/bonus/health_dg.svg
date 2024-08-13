@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="bonusItems" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 100 100">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+      }
+
+      .cls-2 {
+        fill: url(#linear-gradient);
+      }
+    </style>
+    <linearGradient id="linear-gradient" x1="-11.62" y1="-1.87" x2="43.59" y2="17.74" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ec2b2a"/>
+      <stop offset="0" stop-color="#eb2a2b"/>
+      <stop offset=".19" stop-color="#da2856"/>
+      <stop offset=".36" stop-color="#ce2675"/>
+      <stop offset=".5" stop-color="#c62588"/>
+      <stop offset=".6" stop-color="#c4258f"/>
+      <stop offset="1" stop-color="#912f3b"/>
+    </linearGradient>
+  </defs>
+  <g id="Steroids">
+    <g id="health_x5F_dg">
+      <path class="cls-2" d="M5.95,7.49h-3.49c-.24,0-.52-.13-.63-.33L.09,4.15c-.12-.2-.12-.51,0-.72L1.83.38c.12-.21.4-.38.63-.38h3.49c.23,0,.51.18.63.39l1.75,3.04c.12.2.12.53,0,.73l-1.75,3c-.11.2-.39.33-.63.33Z"/>
+      <rect class="cls-1" x="1.89" y="2.87" width="4.67" height="1.61"/>
+    </g>
+  </g>
+</svg>
