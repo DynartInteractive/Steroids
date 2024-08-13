@@ -59,6 +59,7 @@ export class Steroid {
         //console.log(`Targeting player at: (${this.player.position.x}, ${this.player.position.y}), Steroid Angle: ${this.angle}`);
     }
     getDimensions() {
+        if (!this.steroid) return { width: 0, height: 0 };
         const bbox = this.steroid.getBBox();
         return {
             width: bbox.width,

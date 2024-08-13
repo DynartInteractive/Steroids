@@ -13,10 +13,10 @@ export class GameArea {
         const halfWidth = width / 2;
         const halfHeight = height / 2;
 
-        if (player.position.x < -halfWidth) {
-            player.position.x = this.width + halfWidth;
-        } else if (player.position.x > this.width + halfWidth) {
-            player.position.x = -halfWidth;
+        if (player.position.x < -halfWidth * 3) {
+            player.position.x = this.width + halfWidth * 3;
+        } else if (player.position.x > this.width + halfWidth * 3) {
+            player.position.x = -halfWidth * 3;
         }
 
         if (player.position.y < -halfHeight) {
@@ -45,10 +45,10 @@ export class GameArea {
         const halfWidth = width / 2;
         const halfHeight = height / 2;
 
-        if (steroid.position.x < -halfWidth) {
-            steroid.position.x = this.width + halfWidth;
-        } else if (steroid.position.x > this.width + halfWidth) {
-            steroid.position.x = -halfWidth;
+        if (steroid.position.x < -halfWidth * 3) {
+            steroid.position.x = this.width + halfWidth * 3 ;
+        } else if (steroid.position.x > this.width + halfWidth * 3) {
+            steroid.position.x = -halfWidth * 3;
         }
 
         if (steroid.position.y < -halfHeight) {
