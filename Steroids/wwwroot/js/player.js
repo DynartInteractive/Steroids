@@ -2,6 +2,8 @@ import { Thrust } from './thrust.js';
 import { Projectile } from './projectile.js';
 import { GameArea } from './gameArea.js';
 import { HUD } from "./hud.js";
+import {getDimensions} from "./getDimensions.js";
+
 
 export class Player {
     constructor(svgElement, svgHandler, id, hud, game) {
@@ -150,12 +152,7 @@ export class Player {
     }
 
     getDimensions() {
-        if (!this.player) return { width: 0, height: 0 };
-        const bbox = this.player.getBBox();
-        return {
-            width: bbox.width,
-            height: bbox.height
-        };
+        return getDimensions(this.player);  
     }
     updatePosition() {
         if (!this.player) return;
