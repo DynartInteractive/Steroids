@@ -1,7 +1,4 @@
-﻿- bonus items
-    draw blast_charge.svg for bonus indicator filler
-   
--game
+﻿-game
     logic implementation
         level up
             1-6 levels 1,2 ... 6 enemy count
