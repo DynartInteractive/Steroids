@@ -45,7 +45,27 @@ export class Player {
                 this.playerGroup.appendChild(this.player);
                 
                 this.svgElement.appendChild(this.playerGroup);
-                
+
+                // Calculate the initial bounding box and center
+                const bbox = this.player.getBBox();
+                this.initialCx = bbox.x + bbox.width / 2;
+                this.initialCy = bbox.y + bbox.height / 2;
+
+                this.playerGroup.setAttribute('transform',
+                    `translate(${this.position.x}, ${this.position.y}) 
+                 rotate(0, ${this.initialCx}, ${this.initialCy}) 
+                 scale(1)`); // Initial scale is 1 (no scaling yet)
+
+                // Add a debug rectangle around the bounding box
+                // this.debugRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+                // this.debugRect.setAttribute("x", bbox.x);
+                // this.debugRect.setAttribute("y", bbox.y);
+                // this.debugRect.setAttribute("width", bbox.width);
+                // this.debugRect.setAttribute("height", bbox.height);
+                // this.debugRect.setAttribute("fill", "none");
+                // this.debugRect.setAttribute("stroke", "blue");
+                // this.playerGroup.appendChild(this.debugRect);
+                //
                 this.init();
                 this.updatePosition();
             } else {
@@ -165,17 +185,29 @@ export class Player {
     }
     updatePosition() {
         if (!this.player) return;
-        
+
+        // Calculate the bounding box of the player SVG element to determine the pivot point
         const bbox = this.player.getBBox();
         const cx = bbox.x + bbox.width / 2;
         const cy = bbox.y + bbox.height / 2;
-        //console.log('BBox:', bbox, 'Center:', { cx, cy }, 'Position:', this.position, 'Angle:', this.angle);
 
+        // Calculate the translation values to center the player
         const translateX = this.position.x - cx;
         const translateY = this.position.y - cy;
-        //console.log(`Position: (${this.position.x}, ${this.position.y}), Angle: ${this.angle}`); //uncomment on debug purpose
 
-        this.playerGroup.setAttribute('transform', `translate(${translateX}, ${translateY}) rotate(${this.angle} ${cx} ${cy})`);
+        // Update the player group transform to include translation, rotation around the center, and optional scaling
+        this.playerGroup.setAttribute('transform',
+            `translate(${translateX}, ${translateY}) 
+         rotate(${this.angle}, ${cx}, ${cy}) 
+         scale(1)`); // No scaling applied yet
+
+        // Update debug collision shape position and size if it exists
+        if (this.debugRect) {
+            this.debugRect.setAttribute("x", bbox.x);
+            this.debugRect.setAttribute("y", bbox.y);
+            this.debugRect.setAttribute("width", bbox.width);
+            this.debugRect.setAttribute("height", bbox.height);
+        }
     }
     shoot() {
         const projectileX = this.position.x;

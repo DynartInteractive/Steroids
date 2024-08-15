@@ -170,7 +170,7 @@ class Game {
             steroid.updatePosition();
         });
 
-        this.checkCollisions();
+        this.checkProjectileEnemyCollision();
         this.checkPlayerEnemyCollisions();
         this.checkPlayerBonusCollision();
 
@@ -180,18 +180,19 @@ class Game {
         this.score += points;
         this.scoreDisplay.textContent = `Score: ${this.score}`;
     }
-    checkCollisions() {
+    checkProjectileEnemyCollision() {
         this.player.projectiles.forEach((projectile, pIndex) => {
             this.steroids.forEach((steroid, sIndex) => {
+                // Use AABB or circular collision detection based on the shapes
                 if (this.isCollision(projectile, steroid)) {
                     // Handle collision (e.g., remove steroid, update score, etc.)
                     this.player.projectiles.splice(pIndex, 1);
                     steroid.remove();
-                    projectile.remove()
+                    projectile.remove();
                     this.steroids.splice(sIndex, 1);
                     this.updateScore(10);
                     this.updateBonusIndicator();
-                    
+
                     // Play explosion sound
                     const explosionSound = this.audioHandler.getResource('popping');
                     explosionSound.play();
@@ -245,12 +246,43 @@ class Game {
         const dx = entity1.position.x - entity2.position.x;
         const dy = entity1.position.y - entity2.position.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
-        const entity1Radius = entity1.radius || entity1.getDimensions().width / 2;
-        const entity2Radius = entity2.radius || entity2.getDimensions().width / 2;
 
-        //console.log(`Distance: ${distance}, Entity1 Radius: ${entity1Radius}, Entity2 Radius: ${entity2Radius}`);
+        // Get dimensions for both entities (for non-circular objects)
+        const entity1Radius = entity1.radius || Math.max(entity1.getDimensions().width, entity1.getDimensions().height) / 2;
+        const entity2Radius = entity2.radius || Math.max(entity2.getDimensions().width, entity2.getDimensions().height) / 2;
 
-        return distance < (entity1Radius + entity2Radius); // Adjust as needed
+        // Log the details for debugging
+        // console.log(`Checking collision: 
+        // Entity1: (${entity1.position.x}, ${entity1.position.y}), Radius: ${entity1Radius}
+        // Entity2: (${entity2.position.x}, ${entity2.position.y}), Radius: ${entity2Radius}
+        // Distance: ${distance}`);
+
+        return distance < (entity1Radius + entity2Radius); // Check if distance is less than sum of radii
+    }
+    isAABBCollision(entity1, entity2) {
+        const rect1 = entity1.getDimensions();
+        const rect2 = entity2.getDimensions();
+        const dx = entity1.position.x - entity2.position.x;
+        const dy = entity1.position.y - entity2.position.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        const x1 = entity1.position.x - rect1.width / 2;
+        const y1 = entity1.position.y - rect1.height / 2;
+        const x2 = entity2.position.x - rect2.width / 2;
+        const y2 = entity2.position.y - rect2.height / 2;
+
+        const entity1Radius = entity1.radius || Math.max(entity1.getDimensions().width, entity1.getDimensions().height) / 2;
+        const entity2Radius = entity2.radius || Math.max(entity2.getDimensions().width, entity2.getDimensions().height) / 2;
+
+        console.log(`Checking collision: 
+        Entity1: (${entity1.position.x}, ${entity1.position.y}), Radius: ${entity1Radius}
+        Entity2: (${entity2.position.x}, ${entity2.position.y}), Radius: ${entity2Radius}
+        Distance: ${distance}`);
+
+        return !(x1 > x2 + rect2.width ||
+            x1 + rect1.width < x2 ||
+            y1 > y2 + rect2.height ||
+            y1 + rect1.height < y2);
     }
     
     cleanUpSteroids() {

@@ -21,13 +21,6 @@ export class Steroid {
 
         this.angle = 0; // Initial angle
         this.gameArea = new GameArea();
-
-        // // Uncomment on debug //Create a circle for debugging the position
-        // this.debugCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        // this.debugCircle.setAttribute("r", 5);
-        // this.debugCircle.setAttribute("fill", "red");
-        //this.svgElement.appendChild(this.debugCircle);
-
     }
     initialize() {
         // Load the SVG from the resource handler
@@ -40,15 +33,41 @@ export class Steroid {
             this.steroidGroup.setAttribute('id', `${this.id}-group`);
             this.steroidGroup.appendChild(this.steroid);
 
+            // Append the group to the main SVG element
             this.svgElement.appendChild(this.steroidGroup);
-        }
 
-        this.updatePosition();
+            // Calculate the initial bounding box and center
+            const bbox = this.steroid.getBBox();
+            this.initialCx = bbox.x + bbox.width / 2;
+            this.initialCy = bbox.y + bbox.height / 2;
+
+            // Apply the initial transform to center the steroid correctly
+            this.steroidGroup.setAttribute('transform',
+                `translate(${this.position.x}, ${this.position.y}) 
+             rotate(0, ${this.initialCx}, ${this.initialCy}) 
+             scale(1)`); // Initial scale is 1 (no scaling yet)
+
+            // Add a debug rectangle around the bounding box
+            this.debugRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+            this.debugRect.setAttribute("x", bbox.x);
+            this.debugRect.setAttribute("y", bbox.y);
+            this.debugRect.setAttribute("width", bbox.width);
+            this.debugRect.setAttribute("height", bbox.height);
+            this.debugRect.setAttribute("fill", "none");
+            this.debugRect.setAttribute("stroke", "red");
+            this.steroidGroup.appendChild(this.debugRect);
+
+            // Initialize the position
+            this.updatePosition();
+        } else {
+            console.error(`SVG resource with ID ${this.id} could not be found.`);
+        }
     }
+
 
     fluctuateSize() {
         this.fluctuationSize += this.fluctuationSpeed * this.fluctuationDirection;
-        if (this.fluctuationSize > 1.2 || this.fluctuationSize < 0.8) {
+        if (this.fluctuationSize > 1.1 || this.fluctuationSize < 0.9) {
             this.fluctuationDirection *= -1; // Reverse direction when reaching bounds
         }
     }
@@ -56,7 +75,7 @@ export class Steroid {
     targetPlayer() {
         const dx = this.player.position.x - this.position.x;
         const dy = this.player.position.y - this.position.y;
-        this.angle = Math.atan2(dy, dx) * (180 / Math.PI); // Calculate angle in degrees
+        this.angle = Math.atan2(dy, dx) * (180 / Math.PI) + 90; // Calculate angle in degrees
         //console.log(`Targeting player at: (${this.player.position.x}, ${this.player.position.y}), Steroid Angle: ${this.angle}`);
     }
     getDimensions() {
@@ -87,21 +106,28 @@ export class Steroid {
             }
         }
 
-        // Update SVG element with new position and rotation
-        this.steroidGroup.setAttribute('transform', `translate(${this.position.x}, ${this.position.y}) rotate(${this.angle}) scale(${this.fluctuationSize})`);
+        // Calculate the bounding box of the steroid SVG element to determine the pivot point
+        const bbox = this.steroid.getBBox();
+        const cx = bbox.x + bbox.width / 2;
+        const cy = bbox.y + bbox.height / 2;
 
-        this.gameArea.checkSteroidBoundaries(this); // Check and update boundaries
-        
-        // // Uncomment on debug // Update debug circle position
-        // this.debugCircle.setAttribute('cx', this.steroidPosition.x);
-        // this.debugCircle.setAttribute('cy', this.steroidPosition.y);
+        // Update the SVG element with the new position, rotation, and scale, using the center as the pivot
+        this.steroidGroup.setAttribute('transform',
+            `translate(${this.position.x}, ${this.position.y}) 
+         rotate(${this.angle}, ${cx}, ${cy}) 
+         scale(${this.fluctuationSize})`);
+
+        // Check and update boundaries to ensure the steroid wraps around the game area properly
+        this.gameArea.checkSteroidBoundaries(this);
+
+        // Uncomment on debug // Update debug circle position
+        // this.debugCircle.setAttribute('cx', this.position.x);
+        // this.debugCircle.setAttribute('cy', this.position.y);
     }
+
     remove() {
         if (this.steroidGroup) {
             this.steroidGroup.remove();
-        }
-        if (this.debugCircle) {
-            this.debugCircle.remove();
         }
     }
 }
