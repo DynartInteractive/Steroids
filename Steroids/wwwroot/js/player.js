@@ -16,6 +16,8 @@ export class Player {
         this.maxPlayerLevel = 3;
         this.projectileSizeLevel = 0;
         this.maxProjectileSizeLevel = 3;
+        this.bonusIndicator = 0;
+        this.maxBonusIndicator = 10; 
         this.hud = hud;
         this.game = game;
         this.position = { x: 50, y: 50 }; // Centered in the 1000x1000 viewBox
@@ -86,20 +88,25 @@ export class Player {
         }
     }
     chargeBlastWave() {
-        this.hud.updateBonusIndicator(10); // Assume 10 is fully charged
+        this.hud.updateBonusIndicator(this.maxBonusIndicator); 
         console.log('BlastWave fully charged!');
     }
+
     decreaseHealth(amount) {
         this.health = Math.max(0, this.health - amount);
         this.hud.updateHealthIndicator(this.health);
         this.damageFlag = true;
+        this.hud.updateBonusIndicator(0);
         console.log(`Health decreased by ${amount}. Current health: ${this.health}`);
         if (this.health === 0) {
             console.log('Player is dead.');
             this.game.gameOver(); // Notify the game of the game over
         }
     }
-
+    updateBonusIndicator(bonusLevel) {
+        this.hud.updateBonusIndicator(bonusLevel);
+    }
+        
     resetDamageFlag() {
         this.damageFlag = false;
     }
@@ -212,6 +219,7 @@ export class Player {
         this.health = 10;
         this.playerLevel = 0;
         this.projectileSizeLevel = 0;
+        this.bonusIndicator = 0;
         this.hud.updateHealthIndicator(this.health);
         this.hud.updateDistanceIndicator(this.playerLevel);
         this.hud.updateSizeIndicator(this.projectileSizeLevel);

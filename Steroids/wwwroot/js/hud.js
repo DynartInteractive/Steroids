@@ -119,13 +119,23 @@
     }
 
     updateBonusIndicator(bonusLevel) {
-        this.resetBonusIndicators();
+        console.log(`Updating bonus indicators to level: ${bonusLevel}`);
+        console.trace('Trace for updateBonusIndicator call');
+
+        this.resetBonusIndicators(); 
+
         for (let i = 0; i < bonusLevel; i++) {
-            this.bonusIndicators[i].style.display = 'block';
+            if (this.bonusIndicators[i]) {
+                //console.log(`Activating bonus indicator ${i}`);
+                this.bonusIndicators[i].style.display = 'block';
+            } else {
+                console.warn(`Bonus indicator ${i} is undefined`);
+            }
         }
     }
+
     updateHealthIndicator(health) {
-        const maxHealth = 10;  // Assuming max health is 10
+        const maxHealth = 10; 
         const indicatorsCount = this.healthIndicators.length;  // Total number of visual indicators
 
         this.healthIndicators.forEach((indicator, index) => {

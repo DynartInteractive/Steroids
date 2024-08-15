@@ -93,7 +93,7 @@
                 }
                 break;
             case 'blast_charge':
-                if (player.bonusIndicators < 10) {
+                if (player.bonusIndicator < 10) {
                     player.chargeBlastWave();
                 } else {
                     scoreChange = 100;

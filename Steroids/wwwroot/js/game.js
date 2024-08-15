@@ -190,7 +190,8 @@ class Game {
                     projectile.remove()
                     this.steroids.splice(sIndex, 1);
                     this.updateScore(10);
-
+                    this.updateBonusIndicator();
+                    
                     // Play explosion sound
                     const explosionSound = this.audioHandler.getResource('popping');
                     explosionSound.play();
@@ -202,15 +203,20 @@ class Game {
                 }
             });
         });
-        this.updateBonusIndicator()
     }
     updateBonusIndicator() {
         // Check if no damage was taken since the last update
         if (!this.player.damageFlag) {
             const currentBonusLevel = this.player.hud.bonusIndicators.filter(indicator => indicator.style.display === 'block').length;
-            const newBonusLevel = Math.min(currentBonusLevel + 1, this.player.hud.bonusIndicators.length);
-            this.player.hud.updateBonusIndicator(newBonusLevel); // Increment bonus level within the limit
+
+            if (currentBonusLevel === this.player.maxBonusIndicator) {
+                this.updateScore(5); // Increase the score by 5 points
+            } else {
+                const newBonusLevel = Math.min(currentBonusLevel + 1, this.player.hud.bonusIndicators.length);
+                this.player.hud.updateBonusIndicator(newBonusLevel); // Increment bonus level within the limit
+            }
         }
+
         this.player.resetDamageFlag(); // Reset the flag regardless of the outcome
     }
     checkPlayerEnemyCollisions() {
@@ -245,13 +251,6 @@ class Game {
         //console.log(`Distance: ${distance}, Entity1 Radius: ${entity1Radius}, Entity2 Radius: ${entity2Radius}`);
 
         return distance < (entity1Radius + entity2Radius); // Adjust as needed
-    }
-    updateBonusIndicatorIfNoDamage() {
-        // Check if no damage was taken since the last update
-        if (!this.player.damageFlag) {
-            this.player.hud.updateBonusIndicator(this.player.hud.bonusIndicators.length + 1); // Increment bonus level
-        }
-        this.player.resetDamageFlag(); // Reset the flag regardless of the outcome
     }
     
     cleanUpSteroids() {
