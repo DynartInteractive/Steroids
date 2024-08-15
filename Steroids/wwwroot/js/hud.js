@@ -45,12 +45,20 @@
             this.hud.querySelector('#distanceIndicator_0'),
             this.hud.querySelector('#distanceIndicator_1'),
             this.hud.querySelector('#distanceIndicator_2')
-        ];
+        ].filter((indicator, index) => {
+            if (!indicator) console.error(`Distance indicator ${index} not found`);
+            return indicator !== null;
+        });
+
         this.sizeIndicators = [
             this.hud.querySelector('#sizeIndicator_0'),
             this.hud.querySelector('#sizeIndicator_1'),
             this.hud.querySelector('#sizeIndicator_2')
-        ];
+        ].filter((indicator, index) => {
+            if (!indicator) console.error(`Size indicator ${index} not found`);
+            return indicator !== null;
+        });
+
         this.bonusIndicators = [
             this.hud.querySelector('#BonusIndicator_0'),
             this.hud.querySelector('#BonusIndicator_1'),
@@ -62,14 +70,21 @@
             this.hud.querySelector('#BonusIndicator_7'),
             this.hud.querySelector('#BonusIndicator_8'),
             this.hud.querySelector('#BonusIndicator_9')
-        ];
+        ].filter((indicator, index) => {
+            if (!indicator) console.error(`Bonus indicator ${index} not found`);
+            return indicator !== null;
+        });
+
         this.healthIndicators = [
             this.hud.querySelector('#healthIndicator_0'),
             this.hud.querySelector('#healthIndicator_1'),
             this.hud.querySelector('#healthIndicator_2'),
             this.hud.querySelector('#healthIndicator_3'),
             this.hud.querySelector('#healthIndicator_4')
-        ];
+        ].filter((indicator, index) => {
+            if (!indicator) console.error(`Health indicator ${index} not found`);
+            return indicator !== null;
+        });
 
         this.resetBonusIndicators();
         this.resetSizeIndicators();

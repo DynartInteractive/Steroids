@@ -47,17 +47,19 @@
     }
 
     collect(player) {
+        let scoreChange = 0;
+
         switch (this.type) {
             case 'health_up':
                 if (player.health < player.maxHealth) {
                     player.increaseHealth(1);
                 } else {
-                    player.addScore(100);
+                    scoreChange = 100;
                 }
                 break;
             case 'health_dg':
                 if (player.health === 1) {
-                    player.addScore(-100);
+                    scoreChange = -100;
                 } else {
                     player.decreaseHealth(1);
                 }
@@ -66,12 +68,12 @@
                 if (player.playerLevel < player.maxPlayerLevel) {
                     player.upgradePlayer();
                 } else {
-                    player.addScore(100);
+                    scoreChange = 100;
                 }
                 break;
             case 'player_dg':
                 if (player.playerLevel === 0) {
-                    player.addScore(-100);
+                    scoreChange = -100;
                 } else {
                     player.downgradePlayer();
                 }
@@ -80,24 +82,30 @@
                 if (player.projectileSizeLevel < player.maxProjectileSizeLevel) {
                     player.upgradeProjectileSize();
                 } else {
-                    player.addScore(100);
+                    scoreChange = 100;
                 }
                 break;
             case 'projectile_dg':
                 if (player.projectileSizeLevel === 0) {
-                    player.addScore(-100);
+                    scoreChange = -100;
                 } else {
-                    player.addScore(100);
+                    player.downgradeProjectileSize();
                 }
                 break;
             case 'blast_charge':
                 if (player.bonusIndicators < 10) {
                     player.chargeBlastWave();
                 } else {
-                    player.addScore(100);
+                    scoreChange = 100;
                 }
                 break;
         }
+
+        // Update the score in the game using the updateScore method
+        if (scoreChange !== 0) {
+            player.game.updateScore(scoreChange); 
+        }
+
         this.remove();
     }
 

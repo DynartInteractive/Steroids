@@ -5,8 +5,10 @@ import { GameArea } from './gameArea.js';
 import { SvgResourceHandler, AudioResourceHandler, InitResources } from "./resourceHandler.js";
 import { BonusItem } from "./bonusItem.js";
 import { DrawTitle } from "./drawTitle.js";
+import { ScoreBoard} from "./scoreBoard.js";
+import { LeaderBoard } from './leaderBoard.js';
 
-let gameInstance = null;
+export let gameInstance = null;
 let svgHandler = null;
 let audioHandler = null;
 
@@ -27,7 +29,7 @@ async function initializeGameResources() {
     
     return { svgHandler, audioHandler };
 }
-async function startGame() {
+export async function startGame() {
     // Start or restart the game
     if (gameInstance) {
         gameInstance.reset();
@@ -50,7 +52,12 @@ class Game {
         this.level = 1;
         this.score = 0;
         this.lastCollisionTime = 0;
-
+        this.isPaused = false;
+        this.animationFrame = null;
+        this.scoreDisplay = document.getElementById('scoreDisplay');
+        
+        this.scoreBoard = new ScoreBoard('https://api.dynart.net/v1', 'exampleUserId', 'exampleAppId');
+        
         this.initLevel(this.level).then(() => this.update());
         this.spawnBonusItem()
         
@@ -169,6 +176,10 @@ class Game {
 
         this.animationFrame = requestAnimationFrame(() => this.update());
     }
+    updateScore(points) {
+        this.score += points;
+        this.scoreDisplay.textContent = `Score: ${this.score}`;
+    }
     checkCollisions() {
         this.player.projectiles.forEach((projectile, pIndex) => {
             this.steroids.forEach((steroid, sIndex) => {
@@ -178,7 +189,7 @@ class Game {
                     steroid.remove();
                     projectile.remove()
                     this.steroids.splice(sIndex, 1);
-                    this.score += 10;
+                    this.updateScore(10);
 
                     // Play explosion sound
                     const explosionSound = this.audioHandler.getResource('popping');
@@ -191,6 +202,16 @@ class Game {
                 }
             });
         });
+        this.updateBonusIndicator()
+    }
+    updateBonusIndicator() {
+        // Check if no damage was taken since the last update
+        if (!this.player.damageFlag) {
+            const currentBonusLevel = this.player.hud.bonusIndicators.filter(indicator => indicator.style.display === 'block').length;
+            const newBonusLevel = Math.min(currentBonusLevel + 1, this.player.hud.bonusIndicators.length);
+            this.player.hud.updateBonusIndicator(newBonusLevel); // Increment bonus level within the limit
+        }
+        this.player.resetDamageFlag(); // Reset the flag regardless of the outcome
     }
     checkPlayerEnemyCollisions() {
         const currentTime = performance.now();
@@ -199,7 +220,7 @@ class Game {
                 if (currentTime - this.lastCollisionTime >= 1000) { // Apply damage every second
                     this.player.decreaseHealth(1);
                     this.lastCollisionTime = currentTime;
-                    console.log(`megbasz`);
+                    //console.log(`megbasz`);
                 }
             }
             
@@ -225,12 +246,21 @@ class Game {
 
         return distance < (entity1Radius + entity2Radius); // Adjust as needed
     }
+    updateBonusIndicatorIfNoDamage() {
+        // Check if no damage was taken since the last update
+        if (!this.player.damageFlag) {
+            this.player.hud.updateBonusIndicator(this.player.hud.bonusIndicators.length + 1); // Increment bonus level
+        }
+        this.player.resetDamageFlag(); // Reset the flag regardless of the outcome
+    }
     
     cleanUpSteroids() {
         this.steroids.forEach(steroid => steroid.remove())
     }
-    gameOver() {
+    async gameOver() {
         console.log('Game Over!');
+        await this.scoreBoard.sendScore(this.score);
+        
         // Display game over message
         const gameOverMessage = document.createElement('div');
         gameOverMessage.textContent = 'Game Over';
@@ -245,14 +275,30 @@ class Game {
 
         // Stop the game loop
         cancelAnimationFrame(this.animationFrame);
-        
+
         setTimeout(() => {
             gameOverMessage.remove();
-            const drawTitle = new DrawTitle(this.svgElement, startGame);
-            drawTitle.drawTitle();
-        }, 3000); // Return to the title screen after 3 seconds
+            const leaderBoard = new LeaderBoard('https://api.dynart.net/v1', 'exampleAppId');
+            leaderBoard.displayLeaderBoard();
+        }, 3000);
     }
 }
+function positionScoreDisplay() {
+    const gameArea = document.getElementById('gameArea');
+    const scoreDisplay = document.getElementById('scoreDisplay');
+
+    const gameAreaRect = gameArea.getBoundingClientRect();
+
+    // Set the scoreDisplay position based on the gameArea
+    scoreDisplay.style.top = `${gameAreaRect.top + 10}px`;  // 10px padding from the top of gameArea
+    scoreDisplay.style.left = `${gameAreaRect.left + (gameAreaRect.width / 2) - (scoreDisplay.offsetWidth / 2)}px`;
+}
+
+// Call this function after the game area has loaded and when the window is resized
+window.addEventListener('resize', positionScoreDisplay);
+window.addEventListener('DOMContentLoaded', () => {
+    positionScoreDisplay();
+});
 
 // Wait for DOM to load, then display the title screen
 document.addEventListener('DOMContentLoaded', async () => {

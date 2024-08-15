@@ -1,7 +1,7 @@
 import { Thrust } from './thrust.js';
 import { Projectile } from './projectile.js';
 import { GameArea } from './gameArea.js';
-import { HUD } from "./hud.js";
+import { HUD } from './hud.js';
 import {getDimensions} from "./getDimensions.js";
 
 
@@ -27,6 +27,7 @@ export class Player {
         this.turningRight = false;
         this.projectiles = [];
         this.gameArea = new GameArea();
+        this.damageFlag = false;
 
         this.loadPlayerSvg();
     }
@@ -91,16 +92,17 @@ export class Player {
     decreaseHealth(amount) {
         this.health = Math.max(0, this.health - amount);
         this.hud.updateHealthIndicator(this.health);
+        this.damageFlag = true;
         console.log(`Health decreased by ${amount}. Current health: ${this.health}`);
         if (this.health === 0) {
             console.log('Player is dead.');
             this.game.gameOver(); // Notify the game of the game over
         }
     }
-    addScore(score) {
-        this.game.score += score;
-    }
 
+    resetDamageFlag() {
+        this.damageFlag = false;
+    }
     increaseHealth(amount) {
         this.health = Math.min(this.maxHealth, this.health + amount);
         this.hud.updateHealthIndicator(this.health);
@@ -205,6 +207,20 @@ export class Player {
         });
 
         requestAnimationFrame(() => this.updatePlayer());
+    }
+    reset() {
+        this.health = 10;
+        this.playerLevel = 0;
+        this.projectileSizeLevel = 0;
+        this.hud.updateHealthIndicator(this.health);
+        this.hud.updateDistanceIndicator(this.playerLevel);
+        this.hud.updateSizeIndicator(this.projectileSizeLevel);
+        this.hud.updateBonusIndicator(0);
+        this.position = { x: 50, y: 50 };
+        this.angle = 0;
+        this.projectiles.forEach((projectile) => projectile.remove());
+        this.projectiles = [];
+        this.damageFlag = false;
     }
 }
 
