@@ -224,7 +224,8 @@ class Game {
                     steroid.remove();
                     this.steroids.splice(sIndex, 1);
                     this.updateScore(10);
-
+                    this.updateBonusIndicator();
+                    
                     // Play explosion sound
                     const explosionSound = this.audioHandler.getResource('popping');
                     if (explosionSound) {
