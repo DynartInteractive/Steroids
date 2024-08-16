@@ -171,7 +171,7 @@ export class Player {
                 break;
             case 'Alt':
                 event.preventDefault();
-                if (this.bonusIndicator === this.bonusIndicator){
+                if (this.bonusIndicator === this.maxBonusIndicator){
                     this.castBlastWave();
                     this.bonusIndicator = 0;
                     this.hud.updateBonusIndicator(0);
