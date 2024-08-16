@@ -98,8 +98,22 @@ class Game {
     spawnBonusItem() {
         const bonusTypes = ['health_up', 'health_dg', 'player_up', 'player_dg', 'projectile_up', 'projectile_dg', 'blast_charge'];
         const randomType = bonusTypes[Math.floor(Math.random() * bonusTypes.length)];
+
+        let x, y, distance;
+        const playerX = this.player.position.x;
+        const playerY = this.player.position.y;
+        const minDistance = 100;  // Minimum distance from the player
+        const maxDistance = Math.min(this.gameArea.width, this.gameArea.height) * 0.9 / 2;
+
+        do {
+            x = Math.random() * this.gameArea.width * 0.9;
+            y = Math.random() * this.gameArea.height * 0.9;
+            distance = Math.sqrt(Math.pow(x - playerX, 2) + Math.pow(y - playerY, 2));
+        } while (distance < minDistance);
+
         this.bonusItem = new BonusItem(randomType, this.svgElement, this.svgHandler, this.gameArea, () => this.scheduleNextBonusItem());
-        console.log(`Spawned bonus item: ${randomType}`);
+        this.bonusItem.position = { x, y };
+        console.log(`Spawned bonus item: ${randomType} at (${x}, ${y})`);
     }
     scheduleNextBonusItem() {
         const spawnDelay = Math.random() * (15000 - 3000) + 3000; // Random delay between 3 and 15 seconds
