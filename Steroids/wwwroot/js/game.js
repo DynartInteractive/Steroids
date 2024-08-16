@@ -127,6 +127,14 @@ class Game {
             levelUpSound.play();
         }
 
+        // Make the player invincible for 4 seconds
+        this.player.isInvincible = true;
+        this.player.blinkEffect(4000);  
+
+        setTimeout(() => {
+            this.player.isInvincible = false;
+        }, 4000);
+        
         // Remove message and start next level after a brief delay
         setTimeout(() => {
             levelUpMessage.remove();

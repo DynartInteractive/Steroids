@@ -118,11 +118,21 @@ export class Player {
     }
 
     decreaseHealth(amount) {
+        if (this.isInvincible) return;
+        
         this.health = Math.max(0, this.health - amount);
         this.hud.updateHealthIndicator(this.health);
         this.damageFlag = true;
         this.hud.updateBonusIndicator(0);
         console.log(`Health decreased by ${amount}. Current health: ${this.health}`);
+        
+        this.isInvincible = true;
+        this.blinkEffect(1000);
+
+        setTimeout(() => {
+            this.isInvincible = false;
+        }, 1000);
+        
         if (this.health === 0) {
             console.log('Player is dead.');
             this.game.gameOver(); // Notify the game of the game over
@@ -194,6 +204,21 @@ export class Player {
 
     getDimensions() {
         return getDimensions(this.player);  
+    }
+    blinkEffect(duration) {
+        const blinkInterval = 100; // Blink every 100ms
+        const endTime = Date.now() + duration;
+
+        const blink = () => {
+            if (Date.now() >= endTime) {
+                this.playerGroup.style.visibility = 'visible';  // Ensure player is visible after blinking ends
+                return;
+            }
+            this.playerGroup.style.visibility = this.playerGroup.style.visibility === 'hidden' ? 'visible' : 'hidden';
+            setTimeout(blink, blinkInterval);
+        };
+
+        blink();
     }
     updatePosition() {
         if (!this.player) return;
