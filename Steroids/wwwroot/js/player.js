@@ -3,7 +3,7 @@ import { Projectile } from './projectile.js';
 import { GameArea } from './gameArea.js';
 import { HUD } from './hud.js';
 import { getDimensions } from "./getDimensions.js";
-import { BlastWave } from "./blastwave.js";
+import { BlastWave } from "./blastWave.js";
 
 
 export class Player {
@@ -82,11 +82,6 @@ export class Player {
         requestAnimationFrame(() => this.updatePlayer());
     }
 
-    castBlastWave() {
-        const blastWave = new BlastWave(this, this.svgElement, this.svgHandler, this.gameArea);
-        this.game.addBlastWave(blastWave);  // Assuming you have a method to track active waves
-    }
-    // Upgrade and downgrade player, projectile size and health
     upgradePlayer() {
         if (this.playerLevel < this.maxPlayerLevel) {
             this.playerLevel += 1;
@@ -140,12 +135,13 @@ export class Player {
         }
     }
     showRedEffect() {
+        console.log(`RedEffect`);
         const gameArea = document.getElementById('gameArea');
-        gameArea.style.backgroundColor = 'rgba(255, 0, 0, 0.5)';  // Red overlay
+        gameArea.style.backgroundColor = 'rgba(255, 0, 0, 1)';  // Red overlay
 
         setTimeout(() => {
             gameArea.style.backgroundColor = '';  // Reset background color
-        }, 200);  // Effect lasts for 200ms
+        }, 1000);  // Effect lasts for 200ms
     }
     updateBonusIndicator(bonusLevel) {
         this.hud.updateBonusIndicator(bonusLevel);
@@ -174,7 +170,8 @@ export class Player {
                 this.shoot();
                 break;
             case 'Alt':
-                if (this.bonusIndicator === this.maxBonusIndicator){
+                event.preventDefault();
+                if (this.bonusIndicator === this.bonusIndicator){
                     this.castBlastWave();
                     this.bonusIndicator = 0;
                     this.hud.updateBonusIndicator(0);

@@ -98,22 +98,8 @@ class Game {
     spawnBonusItem() {
         const bonusTypes = ['health_up', 'health_dg', 'player_up', 'player_dg', 'projectile_up', 'projectile_dg', 'blast_charge'];
         const randomType = bonusTypes[Math.floor(Math.random() * bonusTypes.length)];
-
-        let x, y, distance;
-        const playerX = this.player.position.x;
-        const playerY = this.player.position.y;
-        const minDistance = 100;  // Minimum distance from the player
-        const maxDistance = Math.min(this.gameArea.width, this.gameArea.height) * 0.9 / 2;
-
-        do {
-            x = Math.random() * this.gameArea.width * 0.9;
-            y = Math.random() * this.gameArea.height * 0.9;
-            distance = Math.sqrt(Math.pow(x - playerX, 2) + Math.pow(y - playerY, 2));
-        } while (distance < minDistance);
-
         this.bonusItem = new BonusItem(randomType, this.svgElement, this.svgHandler, this.gameArea, () => this.scheduleNextBonusItem());
-        this.bonusItem.position = { x, y };
-        console.log(`Spawned bonus item: ${randomType} at (${x}, ${y})`);
+        console.log(`Spawned bonus item: ${randomType}`);
     }
     scheduleNextBonusItem() {
         const spawnDelay = Math.random() * (15000 - 3000) + 3000; // Random delay between 3 and 15 seconds
@@ -143,7 +129,7 @@ class Game {
 
         // Make the player invincible for 4 seconds
         this.player.isInvincible = true;
-        this.player.blinkEffect(4000);  
+        this.player.blinkEffect(4000);  // Blink for 4 seconds
 
         setTimeout(() => {
             this.player.isInvincible = false;
@@ -192,50 +178,69 @@ class Game {
     update() {
         if (this.isPaused) return;
 
+        //First pass: update enemies
         this.steroids.forEach(steroid => {
             steroid.updatePosition();
         });
-        this.blastWaves.forEach((blastWave, index) => {
-            blastWave.updateWave();
 
-            // Remove the blast wave if it's no longer active
-            if (blastWave.radius >= blastWave.maxRadius || blastWave.isOutOfBounds()) {
-                this.blastWaves.splice(index, 1);
-            }
-        });
+        if (this.blastWaves.length > 0) {
+            this.updateBlastWaves();
+        }
         
         this.checkProjectileEnemyCollision();
         this.checkPlayerEnemyCollisions();
         this.checkPlayerBonusCollision();
-        
 
         this.animationFrame = requestAnimationFrame(() => this.update());
+    }
+    updateBlastWaves() {
+        // Update all blast waves
+        this.blastWaves.forEach(blastWave => {
+            if (blastWave && blastWave.projectile) {
+                blastWave.updateWave();
+            }
+        });
+
+        // Remove completed or null blast waves
+        this.blastWaves = this.blastWaves.filter(blastWave => {
+            if (blastWave && !blastWave.isDone()) {
+                return true; // Keep active blast waves
+            } else {
+                return false; // Remove completed or null blast waves
+            }
+        });
     }
     updateScore(points) {
         this.score += points;
         this.scoreDisplay.textContent = `Score: ${this.score}`;
     }
     checkProjectileEnemyCollision() {
-        this.player.projectiles.forEach((projectile, pIndex) => {
+        const allProjectiles = [...this.player.projectiles, ...this.blastWaves.map(blastWave => blastWave.projectile)];
+
+        allProjectiles.forEach((projectile, pIndex) => {
             this.steroids.forEach((steroid, sIndex) => {
-                // Use AABB or circular collision detection based on the shapes
-                if (this.isAABBCollision(projectile, steroid)) {
-                    // Handle collision (e.g., remove steroid, update score, etc.)
-                    this.player.projectiles.splice(pIndex, 1);
+                if (this.isCollision(projectile, steroid)) {
+                    // Handle collision: Remove the steroid and update score
                     steroid.remove();
-                    projectile.remove();
                     this.steroids.splice(sIndex, 1);
                     this.updateScore(10);
-                    this.updateBonusIndicator();
 
                     // Play explosion sound
                     const explosionSound = this.audioHandler.getResource('popping');
-                    explosionSound.play();
-                }
+                    if (explosionSound) {
+                        explosionSound.play();
+                    }
 
-                // Check if all steroids are destroyed to advance to the next level
-                if (this.steroids.length === 0) {
-                    this.nextLevel();
+                    // Check if the projectile is a BlastWave and skip removal if it is
+                    if (projectile.type !== 'blastWave') {
+                        projectile.remove();
+                        this.player.projectiles.splice(pIndex, 1);
+                    }
+
+                    // Check if all steroids are destroyed to advance to the next level
+                    if (this.steroids.length === 0) {
+                        this.nextLevel();
+                    }
                 }
             });
         });
@@ -268,15 +273,13 @@ class Game {
             
         });
     }
-    
     checkPlayerBonusCollision() {
         if (this.bonusItem && this.isCollision(this.player, this.bonusItem)) {
             this.bonusItem.collect(this.player);
-            this.bonusItem = null;
-            setTimeout(() => this.spawnBonusItem(), 8000); // Spawn a new bonus item after 5 seconds
+            this.bonusItem = null
+            this.scheduleNextBonusItem(); // Spawn a new bonus item after 5 seconds
         }
     }
-
     isCollision(entity1, entity2) {
         const dx = entity1.position.x - entity2.position.x;
         const dy = entity1.position.y - entity2.position.y;
@@ -309,10 +312,10 @@ class Game {
         const entity1Radius = entity1.radius || Math.max(entity1.getDimensions().width, entity1.getDimensions().height) / 2;
         const entity2Radius = entity2.radius || Math.max(entity2.getDimensions().width, entity2.getDimensions().height) / 2;
 
-        console.log(`Checking collision: 
-        Entity1: (${entity1.position.x}, ${entity1.position.y}), Radius: ${entity1Radius}
-        Entity2: (${entity2.position.x}, ${entity2.position.y}), Radius: ${entity2Radius}
-        Distance: ${distance}`);
+        // console.log(`Checking collision: 
+        // Entity1: (${entity1.position.x}, ${entity1.position.y}), Radius: ${entity1Radius}
+        // Entity2: (${entity2.position.x}, ${entity2.position.y}), Radius: ${entity2Radius}
+        // Distance: ${distance}`);
 
         return !(x1 > x2 + rect2.width ||
             x1 + rect1.width < x2 ||
@@ -324,7 +327,7 @@ class Game {
         this.steroids.forEach(steroid => steroid.remove())
     }
     async gameOver() {
-        console.log('Game Over!');
+        // console.log('Game Over!');
         await this.scoreBoard.sendScore(this.score);
         
         // Display game over message
