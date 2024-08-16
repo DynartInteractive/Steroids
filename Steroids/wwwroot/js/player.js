@@ -126,6 +126,7 @@ export class Player {
         this.hud.updateBonusIndicator(0);
         console.log(`Health decreased by ${amount}. Current health: ${this.health}`);
         
+        this.showRedEffect();
         this.isInvincible = true;
         this.blinkEffect(1000);
 
@@ -138,10 +139,17 @@ export class Player {
             this.game.gameOver(); // Notify the game of the game over
         }
     }
+    showRedEffect() {
+        const gameArea = document.getElementById('gameArea');
+        gameArea.style.backgroundColor = 'rgba(255, 0, 0, 0.5)';  // Red overlay
+
+        setTimeout(() => {
+            gameArea.style.backgroundColor = '';  // Reset background color
+        }, 200);  // Effect lasts for 200ms
+    }
     updateBonusIndicator(bonusLevel) {
         this.hud.updateBonusIndicator(bonusLevel);
-    }
-        
+    }        
     resetDamageFlag() {
         this.damageFlag = false;
     }
