@@ -55,6 +55,7 @@ class Game {
         this.isPaused = false;
         this.animationFrame = null;
         this.scoreDisplay = document.getElementById('scoreDisplay');
+        this.blastWaves = [];
         
         this.scoreBoard = new ScoreBoard('https://api.dynart.net/v1', 'exampleUserId', 'exampleAppId');
         
@@ -142,6 +143,9 @@ class Game {
             this.showPauseMessage();
         }
     }
+    addBlastWave(blastWave) {
+        this.blastWaves.push(blastWave);
+    }
 
     showPauseMessage() {
         const pauseMessage = document.createElement('div');
@@ -169,10 +173,19 @@ class Game {
         this.steroids.forEach(steroid => {
             steroid.updatePosition();
         });
+        this.blastWaves.forEach((blastWave, index) => {
+            blastWave.updateWave();
 
+            // Remove the blast wave if it's no longer active
+            if (blastWave.radius >= blastWave.maxRadius || blastWave.isOutOfBounds()) {
+                this.blastWaves.splice(index, 1);
+            }
+        });
+        
         this.checkProjectileEnemyCollision();
         this.checkPlayerEnemyCollisions();
         this.checkPlayerBonusCollision();
+        
 
         this.animationFrame = requestAnimationFrame(() => this.update());
     }
@@ -184,7 +197,7 @@ class Game {
         this.player.projectiles.forEach((projectile, pIndex) => {
             this.steroids.forEach((steroid, sIndex) => {
                 // Use AABB or circular collision detection based on the shapes
-                if (this.isCollision(projectile, steroid)) {
+                if (this.isAABBCollision(projectile, steroid)) {
                     // Handle collision (e.g., remove steroid, update score, etc.)
                     this.player.projectiles.splice(pIndex, 1);
                     steroid.remove();

@@ -119,10 +119,6 @@ export class Steroid {
 
         // Check and update boundaries to ensure the steroid wraps around the game area properly
         this.gameArea.checkSteroidBoundaries(this);
-
-        // Uncomment on debug // Update debug circle position
-        // this.debugCircle.setAttribute('cx', this.position.x);
-        // this.debugCircle.setAttribute('cy', this.position.y);
     }
 
     remove() {

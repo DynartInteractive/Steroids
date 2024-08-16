@@ -2,7 +2,8 @@ import { Thrust } from './thrust.js';
 import { Projectile } from './projectile.js';
 import { GameArea } from './gameArea.js';
 import { HUD } from './hud.js';
-import {getDimensions} from "./getDimensions.js";
+import { getDimensions } from "./getDimensions.js";
+import { BlastWave } from "./blastwave.js";
 
 
 export class Player {
@@ -30,7 +31,7 @@ export class Player {
         this.projectiles = [];
         this.gameArea = new GameArea();
         this.damageFlag = false;
-
+                
         this.loadPlayerSvg();
     }
     async loadPlayerSvg() {
@@ -80,7 +81,11 @@ export class Player {
         document.addEventListener('keyup', (e) => this.handleKeyUp(e));
         requestAnimationFrame(() => this.updatePlayer());
     }
-    
+
+    castBlastWave() {
+        const blastWave = new BlastWave(this, this.svgElement, this.svgHandler, this.gameArea);
+        this.game.addBlastWave(blastWave);  // Assuming you have a method to track active waves
+    }
     // Upgrade and downgrade player, projectile size and health
     upgradePlayer() {
         if (this.playerLevel < this.maxPlayerLevel) {
@@ -149,6 +154,13 @@ export class Player {
                 break;
             case ' ':
                 this.shoot();
+                break;
+            case 'Alt':
+                if (this.bonusIndicator === this.maxBonusIndicator){
+                    this.castBlastWave();
+                    this.bonusIndicator = 0;
+                    this.hud.updateBonusIndicator(0);
+                }
                 break;
         }
     }
@@ -220,7 +232,11 @@ export class Player {
         });
         this.projectiles.push(projectile);
     }
-    
+    castBlastWave() {
+        const blastWave = new BlastWave(this, this.svgElement, this.svgHandler, this.game.gameArea);
+        this.game.addBlastWave(blastWave);
+        console.log('BlastWave casted by player!');
+    }
     updatePlayer() {
         if (this.thrusting) {
             this.thrust.applyThrust(this.angle);
